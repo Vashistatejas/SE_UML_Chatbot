@@ -1,0 +1,2769 @@
+You are the official AI Assistant of Thapar Institute of Engineering and Technology (TIET), Patiala, India.
+
+You MUST answer using ONLY the information provided in the structured data below (clubs, hostels, staff, faculty, and mentor specialization data).
+Do NOT use external knowledge.
+If information is not present in the dataset, clearly say:
+"This information is not available in the provided TIET dataset."
+
+Core Responsibilities
+
+University Information
+Answer queries about:
+
+Clubs & societies
+
+Hostel details
+
+Faculty & staff
+
+Contact emails & phone numbers
+
+Student services
+
+Only state facts exactly as written in the dataset.
+
+Research Mentor Selection
+When students ask about research areas:
+
+Match research keywords strictly to faculty specializations.
+
+Recommend the MOST relevant faculty.
+
+Provide:
+
+Name
+
+Designation
+
+Specialization
+
+Official email
+
+Do NOT infer personality traits (e.g., “friendly”, “young”).
+
+Do NOT fabricate publication records.
+
+If no exact match exists, state so clearly.
+
+Output Rules
+
+Maximum 250 words.
+
+Clear, structured formatting.
+
+Friendly but factual tone.
+
+Never invent missing data.
+
+Never mix emails or roles.
+
+If uncertain, say so explicitly.
+
+You are a grounded, dataset-restricted assistant.
+
+
+
+
+You are an intelligent, helpful, and polite AI assistant created to assist students, faculty, and visitors of Thapar Institute of Engineering and Technology (Thapar University), Patiala, India.
+COMPLETE IN 250 WORDS MAXIMUM
+
+
+Your main goals are:
+- To answer queries accurately about Thapar University — including its departments, courses, clubs, fests (like Saturnalia, Aranya, etc.), admissions, placements, research, and campus life.
+- To provide helpful general assistance related to academics, university processes, and student support.
+- If a question is not related to Thapar University, still answer helpfully, but in a concise and factual way.
+- Maintain a friendly and respectful tone in every response.
+- When you are unsure about something specific, clearly say so instead of fabricating information.
+
+Guidelines:
+1. Always provide accurate and verified information when possible.
+2. Use clear, simple, and student-friendly language.
+3. When asked for guidance (academic, emotional, or personal), give practical and empathetic advice.
+4. When appropriate, include links, contact points, or departments relevant to Thapar University.
+
+Example:
+User: "Tell me about clubs in Thapar University."
+Assistant: "Thapar University has a wide range of student clubs — technical, cultural, literary, and social. Some popular ones include ACM, AIESEC, EDC, Dance Club, Music Club, and Toastmasters. Each organizes events throughout the semester promoting creativity and teamwork
+
+
+Information about societies/clubs of thapar institute(in the json format. club name; club details; club email; club contact).
+
+{
+  "Sports Society": {
+    "details": "Manages all sports facilities including cricket, football, badminton, tennis, gym, pool; organizes Thaparlympics and URJA.",
+    "email": "sportssoc@thapar.edu",
+    "contact": "President: Dr. Rajesh Pathak (9417178309), General Secretary: Lakhbir Singh (9646108850)"
+  },
+  "Literary Society": {
+    "details": "Enhances literary, debating, writing, communication and oratory skills. Publishes magazine 'Avant Garde'.",
+    "email": "litsoc@thapar.edu",
+    "contact": "President: Dr. Apoorva Bakshi (9888211770)"
+  },
+  "MUDRA": {
+    "details": "Music and Dramatics Society; focuses on theatre, music, dramatics; organizes MUDRA Night and Izhaar.",
+    "email": "mudra@thapar.edu",
+    "contact": "President: Dr. D.P. Singh (9417058769)"
+  },
+  "FAPS": {
+    "details": "Fine Arts and Photography Society; focuses on painting, sketching, photography and exhibitions.",
+    "email": "faps@thapar.edu",
+    "contact": "President: Dr. Ravi Kiran (9876114591)"
+  },
+  "YWC": {
+    "details": "Youth Welfare Club; organizes welfare events, talent hunts, yoga camps, festival celebrations and blood donation drives.",
+    "email": "ywc@thapar.edu",
+    "contact": "President: Dr. Rajeev Kumar (9888260602)"
+  },
+  "SPIC MACAY": {
+    "details": "Promotes Indian classical music and culture; hosts performances by top classical artists.",
+    "email": "spicmacay@thapar.edu",
+    "contact": "President: Dr. Rajesh Khanna (9872883263)"
+  },
+  "CCS": {
+    "details": "Creative Computing Society; promotes coding, algorithms, web hunt, overnight programming events.",
+    "email": "ccs@thapar.edu",
+    "contact": "President: Dr. Inderveer Chana (9417244465)"
+  },
+  "NOX": {
+    "details": "Official dance club of TIET; organizes workshops and the famous NOX Night.",
+    "email": "nox@thapar.edu",
+    "contact": "President: Dr. Swati Sondhi (9897152605)"
+  },
+  "TMC": {
+    "details": "Thapar Movie Club; organizes screenings, film appreciation, CineYouth fest.",
+    "email": "tmc@thapar.edu",
+    "contact": "President: Dr. Manmohan Chhibber (9463600569)"
+  },
+  "Pratigya": {
+    "details": "Teaches underprivileged children, works for community literacy.",
+    "email": "pratigyasoc@thapar.edu",
+    "contact": "President: Dr. Anoop Verma (9815654776)"
+  },
+  "Youth United": {
+    "details": "Social welfare society; organizes charity events, old-age home visits, Joy of Giving.",
+    "email": "yu@thapar.edu",
+    "contact": "President: Dr. Shweta Goyal (9815605532)"
+  },
+  "TUMUN": {
+    "details": "Model United Nations society; focuses on debate, diplomacy and international relations.",
+    "email": "tumun@thapar.edu",
+    "contact": "President: Mrs. Gurvinder Kaur (9815601485)"
+  },
+  "IFLS": {
+    "details": "Leadership & sustainability society; focuses on waste management, food security, eco-awareness.",
+    "email": "ifls@thapar.edu",
+    "contact": "President: Dr. Richa Babbar (9780310043)"
+  },
+  "Adventure Club": {
+    "details": "Organizes trekking, climbing, cycling, rafting, skiing and outdoor adventure events.",
+    "email": "adventureclub@thapar.edu",
+    "contact": "President: Dr. Gagandeep Kaur (9465754590)"
+  },
+  "Frosh Week": {
+    "details": "Orientation and student integration program for freshers; includes PROEM and society fair.",
+    "email": "froshweek@thapar.edu",
+    "contact": "President: Dr. M.D. Singh (9115608835)"
+  },
+  "LUGTU": {
+    "details": "Linux User Group promoting open-source development and cybersecurity.",
+    "email": "lugtu@thapar.edu",
+    "contact": "President: Dr. Maninder Singh (9815608309)"
+  },
+  "Visual Bulletin": {
+    "details": "Official visual media society; handles event coverage and visual communication.",
+    "email": "visualbulletin@gmail.com",
+    "contact": "President: Mr. Tanuj Chopra (7837122924)"
+  },
+  "ECON Club": {
+    "details": "Economics society; promotes financial and economic awareness.",
+    "email": "econclub@thapar.edu",
+    "contact": "President: Dr. Ravi Kiran (9876114591)"
+  },
+  "PWS": {
+    "details": "Environment welfare society promoting clean campus, biodiversity and Swachh Bharat.",
+    "email": "pws@thapar.edu",
+    "contact": "President: Dr. N. Tejo Prakash (9872043262)"
+  },
+  "SSA": {
+    "details": "Spiritual Scientists’ Alliance; promotes spiritual well-being and life understanding.",
+    "email": "ssa@thapar.edu",
+    "contact": "President: Dr. Maninder Singh (9815608309)"
+  },
+  "Enactus": {
+    "details": "Entrepreneurial society solving social problems via innovation.",
+    "email": "enactus@thapar.edu",
+    "contact": "President: Dr. Gagandeep Kaur (9465754590)"
+  },
+  "EDC": {
+    "details": "Entrepreneurship Development Cell; supports startups, innovation and Venture Lab.",
+    "email": "edc@thapar.edu",
+    "contact": "President: Dr. M.D. Singh (9815605616)"
+  },
+  "IICHE": {
+    "details": "Chemical engineering chapter; organizes quizzes, presentations and competitions.",
+    "email": "iiche@thapar.edu",
+    "contact": "President: Dr. V.K. Sangal (9815015705)"
+  },
+  "SOMIE": {
+    "details": "Mechanical & Industrial Engineers society; holds industrial tours, workshops.",
+    "email": "somie@thapar.edu",
+    "contact": "President: Dr. Vivek Jain"
+  },
+  "MAPS": {
+    "details": "Materials and Physics Society; conducts lectures, seminars and competitions.",
+    "email": "maps@thapar.edu",
+    "contact": "President: Dr. D.P. Singh (9417058769)"
+  },
+  "Robotics Society": {
+    "details": "Mechatronics and robotics society for building and designing robots.",
+    "email": "robotics@thapar.edu",
+    "contact": "President: Mr. Ashish Singla (8427950635)"
+  },
+  "ISTE": {
+    "details": "Technical education society; organizes workshops, presentations, ISTE week.",
+    "email": "iste@thapar.edu",
+    "contact": "President: Dr. Rajesh Khanna (9872883263)"
+  },
+  "IET": {
+    "details": "Institution of Engineering and Technology; focuses on lectures, workshops and competitions.",
+    "email": "iet@thapar.edu",
+    "contact": "President: Dr. Manbir Kaur"
+  },
+  "Microsoft Student Chapter": {
+    "details": "Focuses on coding, Visual Basic .NET, C#, and Microsoft technologies.",
+    "email": "msw@thapar.edu",
+    "contact": "President: Dr. Prashant Singh Rana"
+  },
+  "IETE": {
+    "details": "Electronics club; organizes CAT workshops, PCB design, Digi-War.",
+    "email": "iete@thapar.edu",
+    "contact": "President: Dr. Hem Dutt Joshi (8288088161)"
+  },
+  "ASHRAE": {
+    "details": "HVAC engineering society; focuses on air quality and sustainable building technologies.",
+    "email": "ashrae@thapar.edu",
+    "contact": "President: Kundan Lal (9646046258)"
+  },
+  "AIESEC": {
+    "details": "Global youth leadership and cultural exchange organization.",
+    "email": "aiesec@thapar.edu",
+    "contact": "President: Dr. Swati Sondhi (9897152605)"
+  },
+  "OWASP": {
+    "details": "Web & mobile security society.",
+    "email": "owasp@thapar.edu",
+    "contact": "President: Dr. Maninder Singh (9815608309)"
+  },
+  "Toastmasters": {
+    "details": "Public speaking and leadership development club.",
+    "email": "hcilp@thapar.edu",
+    "contact": "President: H.S. Bawa (8288008124)"
+  },
+  "AIChE": {
+    "details": "Chemical engineering professional chapter; organizes Chem-E-Car, lectures, competitions.",
+    "email": "aiche@thapar.edu",
+    "contact": "President: Dr. Rajeev Mehta (9815623714)"
+  },
+  "SAIC": {
+    "details": "Student Alumni Interaction Cell; organizes networking events, reunions, industrial trips.",
+    "email": "saic@thapar.edu",
+    "contact": "President: Dr. Ravi Kiran (9876114591)"
+  },
+  "CodeChef Chapter": {
+    "details": "Competitive programming society; prepares students for global contests.",
+    "email": "cchef@thapar.edu",
+    "contact": "President: Karamjit Kaur Cheema"
+  },
+  "Yatharth": {
+    "details": "Interdisciplinary design & research society.",
+    "email": "yatharth@thapar.edu",
+    "contact": "President: Dr. Tapas Karmaker"
+  },
+  "LEAD Society": {
+    "details": "Industry visits, workshops and academic-industry interaction.",
+    "email": "lead@thapar.edu",
+    "contact": "President: Dr. Jainy Sachdeva"
+  },
+  "SPADES": {
+    "details": "Sports and discipline society; organizes ACE, hostel tournaments & Thaparlympics.",
+    "email": "spades@thapar.edu",
+    "contact": "President: Dr. Rajesh Pathak"
+  },
+  "TEDx": {
+    "details": "Brings TED-like talks to the institute; organizes speaker events.",
+    "contact": "President: Dr. Maninder Singh (9815608309)"
+  },
+  "CARE": {
+    "details": "Chemical research and education association.",
+    "contact": "President: Dr. Amjad Ali (8288008179)"
+  },
+  "TSCE": {
+    "details": "Civil engineering society for field work, design and technical competitions.",
+    "contact": "President: Tanuj Chopra (7837122924)"
+  },
+  "NSS": {
+    "details": "National Service Scheme; organizes cleanliness drives, blood donation and community service.",
+    "email": "nss@thapar.edu",
+    "contact": "President: Dr. Vikas Sangal (9815015705)"
+  },
+  "GENE": {
+    "details": "Biotech society raising technical and scientific awareness.",
+    "email": "gene@thapar.edu",
+    "contact": "President: Dr. Vasundhara Reddy"
+  },
+  "TMS": {
+    "details": "Thapar Mathematical Society promoting math education and research.",
+    "email": "tms@thapar.edu",
+    "contact": "President: Dr. Meenakshi Rana"
+  },
+  "Kalam": {
+    "details": "Works against begging; supports child education via street plays and awareness.",
+    "contact": "President: Dr. Anupam Sharma"
+  }
+}
+
+______________________________________________________________________________
+
+professor details-
+{
+  "TIET_staff": [
+    {
+      "name": "Dr. Meenakshi Rana",
+      "role": "Dean of Student Affairs",
+      "department": "DOM",
+      "email": "dosa@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashish Purohit",
+      "role": "Associate Dean of Student Affairs - 1",
+      "department": "MED",
+      "responsibility": "Students Fests & Interdepartmental Coordination",
+      "email": "adosa1@thapar.edu"
+    },
+    {
+      "name": "Dr. Neeraj Grover",
+      "role": "Associate Dean of Student Affairs - 2",
+      "department": "MED",
+      "responsibility": "Hostel Management & Student Housing",
+      "email": "adosa2@thapar.edu"
+    },
+    {
+      "name": "Dr. Sumit Chandok",
+      "role": "Associate Dean of Student Affairs - 3",
+      "department": "DOM",
+      "responsibility": "Student Clubs, Societies & Chapters",
+      "email": "adosa3@thapar.edu"
+    },
+    {
+      "name": "Dr. Vishal Srivastava",
+      "role": "Associate Dean of Student Affairs - 4",
+      "department": "EIED",
+      "responsibility": "Health, Wellness & DoSA Digital Affairs",
+      "email": "adosa4@thapar.edu"
+    },
+    {
+      "name": "Mr. Sandeep K. Rawat",
+      "role": "Admin Officer, Hostels",
+      "email": "ao_hostels@thapar.edu",
+      "contact": null
+    },
+    {
+      "name": "Mr. Harsh Preet Singh Neerav",
+      "role": "Head, Food & Beverage (Hostels)",
+      "email": "harshpreet.neerav@thapar.edu"
+    },
+    {
+      "name": "Mr. Harpreet Singh Virdi",
+      "role": "All Hostels Manager",
+      "email": "harpreet.virdi@thapar.edu"
+    },
+    {
+      "name": "Mr. Navjot Sharma",
+      "role": "Associate IT, All Hostels",
+      "email": "itmh@thapar.edu"
+    },
+    {
+      "name": "Dr. Mohit Agarwal",
+      "role": "Coordinating Warden (Boys Hostels)",
+      "department": "DECE",
+      "email": "cowarden1@thapar.edu"
+    },
+    {
+      "name": "Dr. Richa Babbar",
+      "role": "Coordinating Warden (Girls Hostels)",
+      "department": "DCE",
+      "email": "cowarden2@thapar.edu"
+    },
+    {
+      "name": "Dr. Pramod Kumar Vaishnav",
+      "role": "Warden, Agira Hall (Hostel-A, Boys)",
+      "department": "DOM",
+      "email": "warden.agira@thapar.edu"
+    },
+    {
+      "name": "Dr. Surjit Singh",
+      "role": "Assistant Warden, Agira Hall (Hostel-A, Boys)",
+      "department": "DCSE",
+      "email": "warden.agira@thapar.edu"
+    },
+    {
+      "name": "Dr. Atul Kumar Upadhyay",
+      "role": "Warden, Amritam Hall (Hostel-B, Boys)",
+      "department": "BTD",
+      "email": "warden.amritam@thapar.edu"
+    },
+    {
+      "name": "Dr. Pratik Tiwari",
+      "role": "Assistant Warden, Amritam Hall (Hostel-B, Boys)",
+      "department": "DCE",
+      "email": "warden.amritam@thapar.edu"
+    },
+    {
+      "name": "Dr. Hari Shankar Singh",
+      "role": "Warden, Prithvi Hall (Hostel-C, Boys)",
+      "department": "ECED",
+      "email": "warden.prithvi@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajendra Kumar",
+      "role": "Warden, Neeram Hall (Hostel-D, Boys)",
+      "department": "MED",
+      "email": "warden.neeram@thapar.edu"
+    },
+    {
+      "name": "Dr. Danie Roy A. B",
+      "role": "Assistant Warden, Neeram Hall (Hostel-D, Boys)",
+      "department": "CED",
+      "email": "warden.neeram@thapar.edu"
+    },
+    {
+      "name": "Dr. Sandeep Pandey",
+      "role": "Warden, Vyan Hall (Hostel-H, Boys)",
+      "department": "EIED",
+      "email": "warden.vyan@thapar.edu"
+    },
+    {
+      "name": "Dr. Munish Kansal",
+      "role": "Warden, Tejas Hall (Hostel-J, Boys)",
+      "department": "SOM",
+      "email": "warden.tejas@thapar.edu"
+    },
+    {
+      "name": "Dr. Dinesh",
+      "role": "Assistant Warden, Tejas Hall (Hostel-J, Boys)",
+      "department": "DECE",
+      "email": "warden.tejas@thapar.edu"
+    },
+    {
+      "name": "Dr. Neeraj Kumar",
+      "role": "Warden, Ambaram Hall (Hostel-K, Boys)",
+      "department": "MED",
+      "email": "warden.ambaram@thapar.edu"
+    },
+    {
+      "name": "Dr. Bharat Garg",
+      "role": "Warden, Viyat Hall (Hostel-L, Boys)",
+      "department": "ECED",
+      "email": "warden.viyat@thapar.edu"
+    },
+    {
+      "name": "Dr. Shivendra Shivani",
+      "role": "Warden, Anantam Hall (Hostel-M, Boys)",
+      "department": "DCSE",
+      "email": "warden.anantam@thapar.edu"
+    },
+    {
+      "name": "Dr. Yogesh Tatte",
+      "role": "Assistant Warden, Anantam Hall (Hostel-M, Boys)",
+      "department": "EIED",
+      "email": "warden.anantam@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashish Kumar Gupta",
+      "role": "Warden, Vyom Hall (Hostel-O, Boys)",
+      "department": "EIED",
+      "email": "warden.vyom@thapar.edu"
+    },
+    {
+      "name": "Dr. Sachin Kansal",
+      "role": "Assistant Warden, Vyom Hall (Hostel-O, Boys)",
+      "department": "CSED",
+      "email": "warden.vyom@thapar.edu"
+    },
+    {
+      "name": "Dr. Geetanjali Chandwani Manocha",
+      "role": "Warden, Vasudha Hall – Block E (Hostel-E, Girls)",
+      "department": "ECED",
+      "email": "warden.vasudhae@thapar.edu"
+    },
+    {
+      "name": "Dr. Deepshikha Tiwari",
+      "role": "Warden, Vasudha Hall – Block G (Hostel-G, Girls)",
+      "department": "CSED",
+      "email": "warden.vasudhag@thapar.edu"
+    },
+    {
+      "name": "Dr. Anupam Sharma",
+      "role": "Warden, Ira Hall (Hostel-I, Girls)",
+      "department": "SHSS",
+      "email": "warden.ira@thapar.edu"
+    },
+    {
+      "name": "Dr. Geeta Kasana",
+      "role": "Warden, Ananta Hall (Hostel-N, Girls)",
+      "department": "DCSE",
+      "email": "warden.ananta@thapar.edu"
+    },
+    {
+      "name": "Dr. Anu Mittal",
+      "role": "Assistant Warden, Ananta Hall (Hostel-N, Girls)",
+      "department": "MED",
+      "email": "wardenn@thapar.edu"
+    },
+    {
+      "name": "Dr. M. Vasundhara",
+      "role": "Warden, Dhriti Hall (Hostel-PG, Girls)",
+      "department": "BTD",
+      "email": "warden.dhriti@thapar.edu"
+    },
+    {
+      "name": "Dr. Trishna Choudhury",
+      "role": "Assistant Warden, Dhriti Hall (Hostel-PG, Girls)",
+      "department": "CED",
+      "email": "warden.dhriti@thapar.edu"
+    },
+    {
+      "name": "Dr. Parimita Roy",
+      "role": "Warden, Vahni Hall (Hostel-Q, Girls)",
+      "department": "DOM",
+      "email": "warden.vahni@thapar.edu"
+    },
+    {
+      "name": "Manish Kumar",
+      "role": "Soft Computing and Computational Intelligence",
+      "department": "CSED",
+
+    }
+    {
+      "name": "Dr. Swati Sondhi",
+      "role": "Assistant Warden, Vahni Hall (Hostel-Q, Girls)",
+      "department": "EIED",
+      "email": "warden.vahni@thapar.edu"
+    },
+    {
+      "name": "Dr. Swati Sondhi",
+      "role": "Assistant Warden, Hostel-FRF/G (Girls)",
+      "department": "EIED",
+      "email": "warden.frfg@thapar.edu"
+    },
+    {
+      "name": "Dr. Vishal Srivastava",
+      "role": "Faculty-in-Charge, Health Centre / Sports / Counselling Cell",
+      "department": "EIED",
+      "email": "healthcentre@thapar.edu"
+    },
+    {
+      "name": "Mr. Lakhbir Singh",
+      "role": "Director, Sports",
+      "email": "lakhbir@thapar.edu"
+    },
+    {
+      "name": "Dr. Sonam Dullat",
+      "role": "Manager (Student Counsellor), Counselling Cell (TICC)",
+      "email": "sonam.dullat@thapar.edu"
+    },
+    {
+      "name": "Ms. Parveen Kumari",
+      "role": "Senior Assistant, DoSA Office",
+      "email": "parveen@thapar.edu"
+    },
+    {
+      "name": "Mr. Naminder Kumar",
+      "role": "Senior Assistant, DoSA Office",
+      "email": "dosa.office@thapar.edu"
+    },
+    {
+      "name": "Mr. Surinder Singh",
+      "role": "Senior Associate, DoSA Office",
+      "email": "dosa.office@thapar.edu"
+    },
+    {
+      "name": "Mr. Raghav Bhatnagar",
+      "role": "Senior Associate, DoSA Office",
+      "email": "dosa.office@thapar.edu"
+    },
+    {
+      "name": "Ms. Shabnam Rani",
+      "role": "Assistant, DoSA Office",
+      "email": "shabnam.rani@thapar.edu"
+    }
+  ]
+}
+
+Hostel details
+
+{
+  "common_facilities": {
+    "internet": "24x7 Wi-Fi",
+    "water": ["RO drinking water", "Water coolers"],
+    "laundry": "Laundry system available",
+    "fitness": ["Gymnasium"],
+    "food": ["Mess facility", "Night canteen (in most hostels)"],
+    "safety": ["Security guards", "CCTV (some hostels)", "Fire alarms"],
+    "guest_rooms": "Available in selected hostels"
+  },
+
+  "boys_hostels": {
+    "Agira Hall": {
+      "code": "A",
+      "year": "third_year",
+      "capacity": 928,
+      "room_type": "Double-seater, shared washrooms",
+      "reception": "9115611510",
+      "warden": {
+        "name": "Dr. Pramod Kumar Vaishnav",
+        "assistant": "Dr. Surjit Singh",
+        "contact": ["8288008640", "9115600644"],
+        "email": "warden.agira@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9878667829", "9814202987"],
+        "night": ["9464600180", "9877831617"],
+        "email": "caretaker.agira@thapar.edu"
+      }
+    },
+
+    "Amritam Hall": {
+      "code": "B",
+      "year": "second_year",
+      "capacity": 724,
+      "room_type": "Double-seater",
+      "reception": "9115611512",
+      "warden": {
+        "name": "Dr. Atul Kumar Upadhyay",
+        "assistant": "Dr. Pratik Tiwari",
+        "contact": ["8288088161", "8088810529"],
+        "email": "warden.amritam@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["7888626061", "9876664547"],
+        "night": ["9855594440", "9781141433"],
+        "email": "caretaker.amritam@thapar.edu"
+      }
+    },
+
+    "Prithvi Hall": {
+      "code": "C",
+      "year": "second_year",
+      "capacity": 387,
+      "room_type": "2 & 3-seater AC rooms",
+      "reception": "9115611513",
+      "warden": {
+        "name": "Dr. Hari Shankar Singh",
+        "contact": ["8090143992"],
+        "email": "warden.prithvi@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608803"],
+        "night": ["9464969982"],
+        "email": "caretaker.prithvi@thapar.edu"
+      }
+    },
+
+    "Neeram Hall": {
+      "code": "D",
+      "year": "second_year",
+      "capacity": 928,
+      "room_type": "Double-seater",
+      "reception": "9115600146",
+      "warden": {
+        "name": "Dr. Rajendra Kumar Godara",
+        "assistant": "Dr. Danie Roy",
+        "contact": ["9115600155", "9456338299"],
+        "email": "warden.neeram@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115600144", "6280678837"],
+        "night": ["9855684107", "8360322101"],
+        "email": "caretaker.neeram@thapar.edu"
+      }
+    },
+
+    "Vyan Hall": {
+      "code": "H",
+      "year": "first_year",
+      "capacity": 680,
+      "room_type": "2-seater & AC blocks",
+      "reception": "9115611518",
+      "warden": {
+        "name": "Dr. Sandeep Pandey",
+        "contact": ["8288008179"],
+        "email": "warden.vyan@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608833", "9872176162"],
+        "night": ["6239138634", "7986534871"],
+        "email": "caretaker.vyan@thapar.edu"
+      }
+    },
+
+    "Tejas Hall": {
+      "code": "J",
+      "year": "first_year",
+      "capacity": 1170,
+      "room_type": "Single-seater clusters",
+      "reception": "9115611520",
+      "warden": {
+        "name": "Dr. Munish Kansal",
+        "assistant": "Dr. Dinesh",
+        "contact": ["9115608845"],
+        "email": "warden.tejas@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["8559010110"],
+        "night": ["7986578196"],
+        "email": "caretaker.tejas@thapar.edu"
+      }
+    },
+
+    "Ambaram Hall": {
+      "code": "K",
+      "year": "first_year",
+      "capacity": 600,
+      "room_type": "2-seater, AC & shared washrooms",
+      "reception": "9115611521",
+      "warden": {
+        "name": "Dr. Neeraj Kumar",
+        "contact": ["7789810221"],
+        "email": "warden.ambaram@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["7508380066"],
+        "night": ["8427993205", "8556887825"],
+        "email": "caretaker.ambaram@thapar.edu"
+      }
+    },
+
+    "Viyat Hall": {
+      "code": "L",
+      "year": "second_year",
+      "capacity": 300,
+      "room_type": "AC double occupancy",
+      "reception": "9115611522",
+      "warden": {
+        "name": "Dr. Bharat Garg",
+        "contact": ["9115608834"],
+        "email": "warden.viyat@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608840"],
+        "night": ["9463217993"],
+        "email": "caretaker.viyat@thapar.edu"
+      }
+    },
+
+    "Anantam Hall": {
+      "code": "M",
+      "year": "fourth_year",
+      "capacity": 1148,
+      "room_type": "Single & double AC rooms",
+      "reception": "9115611523",
+      "warden": {
+        "name": "Dr. Shivendra Shivani",
+        "assistant": "Dr. Yogesh Tatte",
+        "email": "warden.anantam@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["7889523067"],
+        "night": ["9464600180"],
+        "email": "caretaker.anantam@thapar.edu"
+      }
+    },
+
+    "Vyom Hall": {
+      "code": "O",
+      "year": "third_year",
+      "capacity": 928,
+      "room_type": "Double-seater",
+      "reception": "9115611514",
+      "warden": {
+        "name": "Dr. Ashish Kumar Gupta",
+        "assistant": "Dr. Sachin Kansal",
+        "contact": ["9993409206", "9873153996"],
+        "email": "warden.vyom@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["7009039508", "8826185872"],
+        "night": ["769667652", "8699677205"],
+        "email": "caretaker.vyom@thapar.edu"
+      }
+    }
+  }
+}
+{
+  "common_facilities": {
+    "internet": "24x7 Wi-Fi",
+    "water": ["RO drinking water", "Water coolers"],
+    "laundry": "Laundry system available",
+    "fitness": ["Gymnasium"],
+    "food": ["Mess facility", "Night canteen (in some hostels)"],
+    "safety": ["Security guards", "CCTV (some hostels)", "Fire alarms"],
+    "guest_rooms": "Available in selected hostels"
+  },
+
+  "girls_hostels": {
+    "Vasudha Hall - Block G": {
+      "code": "G",
+      "year": "first_year",
+      "capacity": 234,
+      "room_type": "Multiple room types",
+      "reception": "9115611517",
+      "warden": {
+        "name": "Dr. Deepshikha Tiwari",
+        "contact": ["8288008149"],
+        "email": "warden.vasudhag@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608809"],
+        "night": ["9115608813"],
+        "email": "caretaker.vasudhag@thapar.edu"
+      }
+    },
+
+    "Vasudha Hall - Block E": {
+      "code": "E",
+      "year": "first_year",
+      "capacity": 234,
+      "room_type": "Multiple room types",
+      "reception": "9115611515",
+      "warden": {
+        "name": "Dr. Gitanjali Chandwani Manocha",
+        "contact": ["9557406972"],
+        "email": "warden.vasudhae@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608806"],
+        "night": ["9592949344", "9988716515"],
+        "email": "caretaker.vasudhae@thapar.edu"
+      }
+    },
+
+    "Ira Hall": {
+      "code": "I",
+      "year": "first_year",
+      "capacity": 406,
+      "room_type": "Multiple room types",
+      "reception": "9115611519",
+      "warden": {
+        "name": "Dr. Anupam Sharma",
+        "contact": ["9855572517"],
+        "email": "warden.ira@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608807", "8699112625"],
+        "night": ["7986445408", "7973129929"],
+        "email": "caretaker.ira@thapar.edu"
+      }
+    },
+
+    "Ananta Hall": {
+      "code": "N",
+      "year": "fourth_year",
+      "capacity": 500,
+      "room_type": "Single & double AC rooms",
+      "reception": "9115611524",
+      "warden": {
+        "name": "Dr. Geeta Kasana",
+        "assistant": "Dr. Anu Mittal",
+        "contact": ["9878262723", "9996412318"],
+        "email": "warden.ananta@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608810", "9463425988"],
+        "night": ["8847448020", "9888953557"],
+        "email": "caretaker.ananta@thapar.edu"
+      }
+    },
+
+    "Dhriti Hall": {
+      "code": "PG",
+      "year": "third_year",
+      "capacity": 928,
+      "room_type": "Single-seater",
+      "reception": "9115611525",
+      "warden": {
+        "name": "Dr. M. Vasundhra",
+        "assistant": "Dr. Trishna Choudhury",
+        "contact": ["8288008174", "9115600644"],
+        "email": "warden.dhriti@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9115608811", "8264921367"],
+        "night": ["8557072772", "7986035642"],
+        "email": "caretaker.dhriti@thapar.edu"
+      }
+    },
+
+    "Vahni Hall": {
+      "code": "Q",
+      "year": "second_year",
+      "capacity": 928,
+      "room_type": "Double-seater AC rooms",
+      "reception": "9115611516",
+      "warden": {
+        "name": "Dr. Paramita Roy",
+        "assistant": "Dr. Swati Sondhi",
+        "contact": ["9988034083", "9897152605"],
+        "email": "warden.vahni@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9803500935", "9115130700"],
+        "night": ["7986971106", "9988814753"],
+        "email": "caretaker.vahni@thapar.edu"
+      }
+    },
+
+    "Hostel FRF/G": {
+      "code": "FRF/G",
+      "year": "first_year",
+      "capacity": 480,
+      "room_type": "3-seater Non-AC rooms (attached washrooms)",
+      "reception": null,
+      "warden": {
+        "name": "Dr. Swati Sondhi",
+        "contact": ["9897152605"],
+        "email": "warden.frfg@thapar.edu"
+      },
+      "caretakers": {
+        "day": ["9646738926", "8053942297", "9646947054"],
+        "night": ["7973043577", "9056370692"],
+        "email": "caretaker.frfg@thapar.edu"
+      }
+    }
+  }
+}
+
+
+
+{
+  "batch": 1,
+  "faculty": [
+    {
+      "name": "Dr. Neeraj Kumar",
+      "designation": "Professor & Head, Dean DCT",
+      "specialization": ["Networks", "Cryptography"],
+      "email": "neeraj.kumar@thapar.edu"
+    },
+    {
+      "name": "Dr. Seema Bawa",
+      "designation": "Professor and Dean Outreach",
+      "specialization": ["Data Science", "NLP", "Blockchain Technology", "Machine Learning"],
+      "email": "seema@thapar.edu"
+    },
+    {
+      "name": "Dr. Maninder Singh",
+      "designation": "Professor & Chief Technology Officer",
+      "specialization": ["Network Security", "Software Engineering", "Parallel and Distributed Computing"],
+      "email": "msingh@thapar.edu"
+    },
+    {
+      "name": "Dr. Inderveer Chana",
+      "designation": "Professor & Joint Director, CoE-DSAI",
+      "specialization": ["Cloud Computing", "Energy-aware Computing", "Software Engineering"],
+      "email": ["inderveer@thapar.edu", "dosa@thapar.edu"]
+    },
+    {
+      "name": "Dr. Shalini Batra",
+      "designation": "Professor & Dean (Faculty Affairs)",
+      "specialization": ["Big Data Analytics", "Machine Learning"],
+      "email": "sbatra@thapar.edu"
+    },
+    {
+      "name": "Dr. Anil Kumar Verma",
+      "designation": "Professor & Associate Dean (Dera Bassi)",
+      "specialization": ["Computer Networks", "Security", "Mobile & Wireless Networks"],
+      "email": "akverma@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajesh Kumar",
+      "designation": "Professor",
+      "specialization": ["FANETs", "Fog Computing", "Cloud Computing"],
+      "email": "rakumar@thapar.edu"
+    },
+    {
+      "name": "Dr. Rinkle Rani",
+      "designation": "Professor",
+      "specialization": ["Big Data Analytics", "Machine Learning"],
+      "email": "raggarwal@thapar.edu"
+    },
+    {
+      "name": "Dr. Ajay Kumar",
+      "designation": "Professor",
+      "specialization": ["Quantum Computing", "Theoretical Computer Science", "Software Testing"],
+      "email": "ajaykumar@thapar.edu"
+    },
+    {
+      "name": "Dr. Anju Bala",
+      "designation": "Professor & Associate Head",
+      "specialization": ["Cloud Computing", "Big Data", "Internet of Things"],
+      "email": "anjubala@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 2,
+  "faculty": [
+    {
+      "name": "Dr. V. P. Singh",
+      "designation": "Associate Professor",
+      "specialization": ["Computing", "Computer Networks", "Computer Forensics", "Cyber Law"],
+      "email": "vpsingh@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajiv Kumar",
+      "designation": "Associate Professor",
+      "specialization": ["Image Processing", "Algorithms (Design and Analysis)", "Segmentation"],
+      "email": "rkumar@thapar.edu"
+    },
+    {
+      "name": "Dr. Sharad Saxena",
+      "designation": "Associate Professor",
+      "specialization": ["Wireless Ad-Hoc Sensor Networks", "IoT"],
+      "email": "sharad.saxena@thapar.edu"
+    },
+    {
+      "name": "Dr. Maninder Kaur",
+      "designation": "Associate Professor",
+      "specialization": ["Computer Engineering"],
+      "email": "manindersohal@thapar.edu"
+    },
+    {
+      "name": "Dr. Sushma Jain",
+      "designation": "Associate Professor",
+      "specialization": ["Networking", "Data Analytics", "Machine Learning"],
+      "email": "sjain@thapar.edu"
+    },
+    {
+      "name": "Dr. Ravinder Kumar",
+      "designation": "Associate Professor & Associate Head",
+      "specialization": ["Machine Learning"],
+      "email": "ravinder@thapar.edu"
+    },
+    {
+      "name": "Dr. Vinod Kumar Bhalla",
+      "designation": "Associate Professor",
+      "specialization": ["Software Engineering", "Semantic Web"],
+      "email": "vkbhalla@thapar.edu"
+    },
+    {
+      "name": "Dr. Karun Verma",
+      "designation": "Associate Professor",
+      "specialization": ["Machine Learning", "Natural Language Processing", "Human Computer Interfaces", "Entrepreneurial Research"],
+      "email": "karun.verma@thapar.edu"
+    },
+    {
+      "name": "Dr. Vinay Arora",
+      "designation": "Associate Professor",
+      "specialization": ["Applied Deep Learning in Biomedical Signals"],
+      "email": "vinay.arora@thapar.edu"
+    },
+    {
+      "name": "Dr. Jhilik Bhattacharya",
+      "designation": "Associate Professor & Associate Head",
+      "specialization": ["Computer Vision", "Image Processing"],
+      "email": "jhilik@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 3,
+  "faculty": [
+    {
+      "name": "Dr. Prashant S Rana",
+      "designation": "Associate Professor & Associate Head",
+      "specialization": [
+        "Machine Learning",
+        "Data Mining",
+        "Modelling and Simulation",
+        "Parallel Algorithms",
+        "Optimization",
+        "Computational Biology"
+      ],
+      "email": "prashant.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashima Singh",
+      "designation": "Associate Professor",
+      "specialization": [
+        "DevOps",
+        "Data Mining",
+        "Machine Intelligence",
+        "Software Engineering",
+        "Software Components and Reuse"
+      ],
+      "email": "ashima@thapar.edu"
+    },
+    {
+      "name": "Dr. Sunita Garhwal",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Quantum Walk",
+        "Theoretical Computer Science"
+      ],
+      "email": "sgarhwal@thapar.edu"
+    },
+    {
+      "name": "Dr. Rupali Bhardwaj",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Multimedia Security",
+        "Healthcare",
+        "Image Processing",
+        "Cellular Automata"
+      ],
+      "email": "rupali.bhardwaj@thapar.edu"
+    },
+    {
+      "name": "Dr. Tarunpreet Bhatia",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Wireless Networks",
+        "Network and Information Security",
+        "Cryptography",
+        "Mobile Cloud Computing",
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "tarunpreet@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajkumar Tekchandani",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Software Code Clone Detection",
+        "Deep Learning"
+      ],
+      "email": "rtekchandani@thapar.edu"
+    },
+    {
+      "name": "Dr. Geeta Kasana",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Image Processing",
+        "Information Security"
+      ],
+      "email": "gkasana@thapar.edu"
+    },
+    {
+      "name": "Dr. Shailendra Tiwari",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Computer Vision",
+        "Biomedical Engineering",
+        "Gaming and Animation"
+      ],
+      "email": "shailendra@thapar.edu"
+    },
+    {
+      "name": "Dr. Shivendra Shivani",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Multimedia Processing and Security",
+        "Augmented Reality",
+        "Virtual Reality",
+        "Game Design"
+      ],
+      "email": "shivendra.shivani@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajesh Mehta",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Image Processing",
+        "Machine Learning Algorithms"
+      ],
+      "email": "rajesh.mehta@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 4,
+  "faculty": [
+    {
+      "name": "Dr. Nidhi Kalra",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Theoretical Computer Science",
+        "Blockchain Technologies",
+        "Smartphone Sensors",
+        "Formal Grammar in Biology"
+      ],
+      "email": "nidhi.kalra@thapar.edu"
+    },
+    {
+      "name": "Dr. Jatin Bedi",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Data Mining",
+        "Machine Learning"
+      ],
+      "email": "jatin.bedi@thapar.edu"
+    },
+    {
+      "name": "Dr. Rajendra Kumar Roul",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning",
+        "IoT"
+      ],
+      "email": "raj.roul@thapar.edu"
+    },
+    {
+      "name": "Dr. Sachin Kansal",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Robotics",
+        "Computer Vision",
+        "Mechatronics"
+      ],
+      "email": "sachin.kansal@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashutosh Mishra",
+      "designation": "Associate Professor",
+      "specialization": [
+        "Empirical Software Engineering",
+        "Cognitive Computation",
+        "Human-Computer Interaction",
+        "Computational Bio-Informatics"
+      ],
+      "email": "ashutosh.mishra@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 5,
+  "faculty": [
+    {
+      "name": "Dr. Husanbir Singh Pannu",
+      "designation": "Assistant Professor - III",
+      "specialization": ["Machine Learning"],
+      "email": "hspannu@thapar.edu"
+    },
+    {
+      "name": "Dr. Raman Kumar Goyal",
+      "designation": "Assistant Professor - III",
+      "specialization": ["Wireless Networks"],
+      "email": "ramankumar.goyal@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashutosh Aggarwal",
+      "designation": "Assistant Professor - III",
+      "specialization": ["Image and Video Processing"],
+      "email": "ashutosh.aggarwal@thapar.edu"
+    },
+    {
+      "name": "Dr. Manisha Kaushal",
+      "designation": "Assistant Professor - III",
+      "specialization": [
+        "Image Processing",
+        "Video Processing",
+        "Soft Computing"
+      ],
+      "email": "manisha.kaushal@thapar.edu"
+    },
+    {
+      "name": "Dr. Nitin Saxena",
+      "designation": "Assistant Professor - III",
+      "specialization": [
+        "Nature Inspired Optimization Techniques",
+        "Digital Image Watermarking"
+      ],
+      "email": "nitin.saxena@thapar.edu"
+    },
+    {
+      "name": "Dr. Karamjeet Singh",
+      "designation": "Assistant Professor - III",
+      "specialization": [
+        "Medical Image Processing",
+        "Machine Learning",
+        "IoT",
+        "Medical Image Retrieval"
+      ],
+      "email": "karamjeet.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashima Anand",
+      "designation": "Assistant Professor - III",
+      "specialization": [
+        "Data Hiding Methods",
+        "Digital Image Processing",
+        "Information Security",
+        "Cryptography"
+      ],
+      "email": "ashima.anand@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 6,
+  "faculty": [
+    {
+      "name": "Dr. Sangita Roy",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Network Security",
+        "Cryptography",
+        "Blockchain",
+        "Image Processing",
+        "Deep Learning"
+      ],
+      "email": "sangita.roy@thapar.edu"
+    },
+    {
+      "name": "Dr. Deepshikha Tiwari",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Computer Vision",
+        "Dynamic Texture Recognition",
+        "Texture Analysis and Applications"
+      ],
+      "email": "deepshikha.tiwari@thapar.edu"
+    },
+    {
+      "name": "Dr. Jasmeet Singh",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Machine Learning",
+        "Natural Language Processing"
+      ],
+      "email": "jasmeet.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Rohit Ahuja",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Access Control Solutions in Cloud Computing"
+      ],
+      "email": "rohit.ahuja@thapar.edu"
+    },
+    {
+      "name": "Dr. Manju",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Computer Networks",
+        "Wireless Sensor Networks",
+        "Microprocessor",
+        "Microcontrollers",
+        "Discrete Mathematics"
+      ],
+      "email": "manju.khurana@thapar.edu"
+    },
+    {
+      "name": "Dr. Surjit Singh",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Advanced Computer Networks",
+        "Wireless Sensor Networks",
+        "Software Defined Networks",
+        "Internet of Things",
+        "Blockchain Technologies",
+        "Information Security",
+        "Machine Learning"
+      ],
+      "email": "surjit.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Suresh Raikwar",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Computer Vision",
+        "Image Processing",
+        "Adversarial Learning",
+        "Pattern Recognition"
+      ],
+      "email": "suresh.raikwar@thapar.edu"
+    },
+    {
+      "name": "Dr. Chinmaya Panigrahy",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Image Processing",
+        "Fractal Dimension"
+      ],
+      "email": "chinmaya.panigrahy@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 7,
+  "faculty": [
+    {
+      "name": "Dr. Shivani Sharma",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Data Privacy",
+        "Information Security",
+        "Machine Learning",
+        "Big Data",
+        "Data Mining"
+      ],
+      "email": "shivani.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Mansi Sharma",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Computer Vision",
+        "Computational Imaging and Photography",
+        "Machine Learning",
+        "Data Science"
+      ],
+      "email": "mansi.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Samya Muhuri",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Social Network Analysis"
+      ],
+      "email": "samya.muhuri@thapar.edu"
+    },
+    {
+      "name": "Dr. Simranjit Kaur",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Biomedical Signal Processing",
+        "Image Processing",
+        "Machine Learning"
+      ],
+      "email": "simranjit.kaur@thapar.edu"
+    },
+    {
+      "name": "Dr. Anu Bajaj",
+      "designation": "Assistant Professor - II",
+      "specialization": [
+        "Applied Artificial Intelligence",
+        "Image Processing"
+      ],
+      "email": "anu.bajaj@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 8,
+  "faculty": [
+    {
+      "name": "Dr. Anil Singh",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Cloud Computing",
+        "Fog Computing",
+        "Edge Computing",
+        "Distributed Systems"
+      ],
+      "email": "anil.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Ravneet Kaur",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Social Network Analysis and Mining",
+        "Machine Learning",
+        "Deep Learning",
+        "Natural Language Processing"
+      ],
+      "email": "ravneet.kaur1@thapar.edu"
+    },
+    {
+      "name": "Dr. Garima Singh",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Cryptography",
+        "Network Security",
+        "Machine Type Communications"
+      ],
+      "email": "garima.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Palika Chopra",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Neuro-Computing Techniques",
+        "Software Engineering"
+      ],
+      "email": "palika.chopra@thapar.edu"
+    },
+    {
+      "name": "Dr. Smita Agrawal",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Image Processing",
+        "Multimedia Security"
+      ],
+      "email": "smita.agrawal@thapar.edu"
+    },
+    {
+      "name": "Mr. Sumit Miglani",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Operating Systems",
+        "Wireless Communication",
+        "Computing"
+      ],
+      "email": "smiglani@thapar.edu"
+    },
+    {
+      "name": "Dr. Nitigya Sambyal",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Deep Learning",
+        "Computer Vision",
+        "Image Processing"
+      ],
+      "email": "nitigya.sambyal@thapar.edu"
+    },
+    {
+      "name": "Dr. Rohan Sharma",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Theory of Complex Networks",
+        "Spectral Graph Theory",
+        "Signed Graphs"
+      ],
+      "email": "rohan.sharma@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 9,
+  "faculty": [
+    {
+      "name": "Dr. Vaibhav Pandey",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Scheduling Theory",
+        "Optimization",
+        "Quantum Computing"
+      ],
+      "email": "vaibhav.pandey@thapar.edu"
+    },
+    {
+      "name": "Dr. Amit Kumar Trivedi",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Biometrics",
+        "Image Processing",
+        "Machine Learning"
+      ],
+      "email": "amitkumar.trivedi@thapar.edu"
+    },
+    {
+      "name": "Dr. Shashank Singh",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Natural Language Processing",
+        "Artificial Intelligence"
+      ],
+      "email": "shashank.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Kuntal Chowdhury",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Data Mining",
+        "Medical Image Analysis",
+        "Machine Learning"
+      ],
+      "email": "kuntal.chowdhury@thapar.edu"
+    },
+    {
+      "name": "Dr. Seema Wazarkar",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Computer Vision",
+        "Machine Learning",
+        "Soft Computing",
+        "Multimodal Analysis",
+        "Human-Computer Interaction",
+        "Healthcare and Industrial Applications"
+      ],
+      "email": "seema.wazarkar@thapar.edu"
+    },
+    {
+      "name": "Dr. Jyoti",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Signal Processing",
+        "Machine Learning"
+      ],
+      "email": "jyoti.maggu@thapar.edu"
+    },
+    {
+      "name": "Dr. Anamika Sharma",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Wireless Sensor Networks"
+      ],
+      "email": "anamika.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Manisha Panjeta",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "VANET",
+        "Software Defined Networking",
+        "Optimization"
+      ],
+      "email": "manisha.panjeta@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 10,
+  "faculty": [
+    {
+      "name": "Dr. Payal",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Artificial Intelligence",
+        "Deep Learning",
+        "Computer Vision"
+      ],
+      "email": "payal@thapar.edu"
+    },
+    {
+      "name": "Dr. Javed Imran",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Computer Vision",
+        "Machine Learning"
+      ],
+      "email": "javed.imran@thapar.edu"
+    },
+    {
+      "name": "Dr. Sumit Sharma",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Algorithms",
+        "Design Automation",
+        "Optimization for Digital and Optical Systems"
+      ],
+      "email": "sumit.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Sumit Kumar",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Content-Centric Networks",
+        "Caching",
+        "Fog Computing",
+        "Cloud Computing"
+      ],
+      "email": "kumar.sumit@thapar.edu"
+    },
+    {
+      "name": "Dr. Saif Nalband",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Biomedical Signal Processing",
+        "Machine Learning",
+        "Blockchain in Healthcare"
+      ],
+      "email": "saif.nalband@thapar.edu"
+    },
+    {
+      "name": "Dr. Amrita Dahiya",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Cyber Security",
+        "Network Security",
+        "Intrusion Detection"
+      ],
+      "email": "amrita.dahiya@thapar.edu"
+    },
+    {
+      "name": "Dr. Aditi Sharma",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Affective Computing",
+        "Text Summarization",
+        "Machine Learning"
+      ],
+      "email": "aditi.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Rahul Nijhawan",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Machine Learning",
+        "Image Processing",
+        "Medical Imaging",
+        "Computer Vision"
+      ],
+      "email": "rahul.nijhawan@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 11,
+  "faculty": [
+    {
+      "name": "Dr. Jinee Goyal",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning",
+        "Healthcare"
+      ],
+      "email": "jinee.goyal@thapar.edu"
+    },
+    {
+      "name": "Dr. Simran Setia",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Human Computer Interaction",
+        "Data Science",
+        "E-learning"
+      ],
+      "email": "simran.setia@thapar.edu"
+    },
+    {
+      "name": "Dr. Arun Singh Pundir",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "arun.pundir@thapar.edu"
+    },
+    {
+      "name": "Dr. Mandeep Kaur",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Cloud Computing",
+        "Machine Learning",
+        "Blockchain"
+      ],
+      "email": "mandeep.bajwa@thapar.edu"
+    },
+    {
+      "name": "Dr. Sumit Kumar",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Image Processing",
+        "Object Detection",
+        "Cloud Computing",
+        "Data Security"
+      ],
+      "email": "sumit.kumar2@thapar.edu"
+    },
+    {
+      "name": "Dr. Raghav B. Venkataramaiyer",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Computer Vision",
+        "Computer Graphics"
+      ],
+      "email": "bv.raghav@thapar.edu"
+    },
+    {
+      "name": "Dr. Kapil Rana",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Multimedia Forensics",
+        "Computer Vision",
+        "Image Processing"
+      ],
+      "email": "kapil.rana@thapar.edu"
+    },
+    {
+      "name": "Dr. Vibha Jain",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Fog Computing",
+        "Edge Computing",
+        "Blockchain"
+      ],
+      "email": "vibha.jain@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 12,
+  "faculty": [
+    {
+      "name": "Dr. Ritesh Sharma",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Active Learning",
+        "Data Centric AI",
+        "Incremental Learning",
+        "Graph Neural Networks",
+        "Machine Learning"
+      ],
+      "email": "ritesh.sharma1@thapar.edu"
+    },
+    {
+      "name": "Dr. Jaspinder Kaur",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Cache Side Channel Attacks",
+        "Microarchitectural Security",
+        "Computer Architecture"
+      ],
+      "email": "jaspinder.kaur@thapar.edu"
+    },
+    {
+      "name": "Dr. Vaishali Kansal",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Data Modelling",
+        "Epidemiology",
+        "Data Privacy",
+        "Social Network Analysis"
+      ],
+      "email": "vaishali.kansal@thapar.edu"
+    },
+    {
+      "name": "Dr. Manisha Malik",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Internet of Things",
+        "Network Security",
+        "Lightweight Cryptography"
+      ],
+      "email": "manisha.malik@thapar.edu"
+    },
+    {
+      "name": "Dr. Subhrendu Chattopadhyay",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Operating Systems",
+        "Distributed Systems",
+        "Computer Networks"
+      ],
+      "email": "subhrendu.chattopadhyay@thapar.edu"
+    },
+    {
+      "name": "Dr. Jyoti",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Parallel and Distributed Systems"
+      ],
+      "email": "jyoti@thapar.edu"
+    },
+    {
+      "name": "Dr. Jaskirat Singh",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "EEG Signal Processing",
+        "Cognitive Remediation",
+        "Wireless Sensor Networks"
+      ],
+      "email": "jaskirat.singh@thapar.edu"
+    },
+    {
+      "name": "Sourav Roy",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Network Security",
+        "Cryptography",
+        "Internet of Things",
+        "Digital Logic",
+        "Computer Architecture"
+      ],
+      "email": "sourav.roy@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 13,
+  "faculty": [
+    {
+      "name": "Dr. Nitin Arora",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Image Processing",
+        "Machine Learning"
+      ],
+      "email": "nitin.arora@thapar.edu"
+    },
+    {
+      "name": "Dr. Ananya Pandey",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Computer Vision",
+        "Multimodal Data Analysis",
+        "Deep Learning",
+        "Sentiment Analysis"
+      ],
+      "email": "ananya.pandey@thapar.edu"
+    },
+    {
+      "name": "Dr. Suresh Kumar",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Artificial Intelligence",
+        "Knowledge Representation",
+        "Ontologies",
+        "Natural Language Processing",
+        "Machine Learning",
+        "Cyber Security"
+      ],
+      "email": "suresh.kumar1@thapar.edu"
+    },
+    {
+      "name": "Dr. Manpreet Singh",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Machine Learning",
+        "Software Testing",
+        "Defect Prediction",
+        "Optimization"
+      ],
+      "email": "manpreet.singh1@thapar.edu"
+    },
+    {
+      "name": "Dr. Himanshu Gauttam",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Edge AI",
+        "Internet of Things",
+        "Applied AI"
+      ],
+      "email": "himanshu.gauttam@thapar.edu"
+    },
+    {
+      "name": "Dr. Lovi Dhamija",
+      "designation": "Assistant Professor - I",
+      "specialization": [
+        "Adversarial Machine Learning",
+        "Information Security"
+      ],
+      "email": "lovi.dhamija@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 14,
+  "faculty": [
+    {
+      "name": "Dr. Gurpal Singh Chhabra",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Cyber Forensics",
+        "Network Security",
+        "Big Data Analytics",
+        "Business Intelligence",
+        "Internet of Things",
+        "Machine Learning",
+        "Sentiment Analysis"
+      ],
+      "email": "gurpal.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Manish Kumar",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Soft Computing",
+        "Computational Intelligence"
+      ],
+      "email": "manish.kumar1@thapar.edu"
+    },
+    {
+      "name": "Dr. Shubhra Dwivedi",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Information Security"
+      ],
+      "email": "shubhra.dwivedi@thapar.edu"
+    },
+    {
+      "name": "Dr. Anjula Mehto",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Wireless Sensor Networks",
+        "Internet of Things",
+        "Machine Learning"
+      ],
+      "email": "anjula.mehto@thapar.edu"
+    },
+    {
+      "name": "Dr. Anurag Tiwari",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "High-Dimensional Data Modelling",
+        "Computational Neuroscience",
+        "Natural Language Processing",
+        "Brain-Computer Interface Modelling",
+        "Computer Vision",
+        "Medical Image Analysis"
+      ],
+      "email": "anurag.tiwari@thapar.edu"
+    },
+    {
+      "name": "Dr. Swati Sharma",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "VANET",
+        "Networking"
+      ],
+      "email": "swati.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Ashish Bajaj",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Adversarial Machine Learning",
+        "Deep Learning",
+        "Natural Language Processing"
+      ],
+      "email": "ashish.bajaj@thapar.edu"
+    },
+    {
+      "name": "Dr. Himika Sharma",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Machine Learning"
+      ],
+      "email": "himika.sharma@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 15,
+  "faculty": [
+    {
+      "name": "Dr. Shruti Aggarwal",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Data Mining",
+        "Software Engineering",
+        "Databases",
+        "Artificial Intelligence",
+        "Big Data",
+        "Internet of Things"
+      ],
+      "email": "shruti.aggarwal@thapar.edu"
+    },
+    {
+      "name": "Dr. Mahak Gambhir",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Natural Language Processing",
+        "Deep Learning"
+      ],
+      "email": "mahak.gambhir@thapar.edu"
+    },
+    {
+      "name": "Dr. Tanu Goyal",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Computer Networks",
+        "Mobile Computing"
+      ],
+      "email": "tanugoyal@thapar.edu"
+    },
+    {
+      "name": "Ms. Nidhi Chakravarty",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Speech Processing",
+        "Image Processing",
+        "Audio Spoof Detection",
+        "Audio Signal Processing",
+        "Machine Learning"
+      ],
+      "email": "nidhi.chakravarty@thapar.edu"
+    },
+    {
+      "name": "Mrs. Ashima Khosla",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Machine Learning",
+        "EEG Signal Processing",
+        "Healthcare"
+      ],
+      "email": "ashima.khosla@thapar.edu"
+    },
+    {
+      "name": "Dr. Abhishek Kesarwani",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Image Processing",
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "abhishek.kesarwani@thapar.edu"
+    },
+    {
+      "name": "Dr. G. V. Eswara Rao",
+      "designation": "Assistant Professor (Term)",
+      "specialization": [
+        "Quantum Machine Learning",
+        "Medical Imaging",
+        "Computer Vision",
+        "Artificial Intelligence",
+        "Machine Learning"
+      ],
+      "email": "gveswara.rao@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 16,
+  "faculty": [
+    {
+      "name": "Dr. Deep Mann",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Cloud Computing",
+        "Identity Management"
+      ],
+      "email": "deep.mann@thapar.edu"
+    },
+    {
+      "name": "Dr. Harkiran Kaur",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Information Retrieval Systems",
+        "Machine Learning",
+        "Social Network Analysis",
+        "Intelligent Databases",
+        "Cultural Computing",
+        "Software Engineering"
+      ],
+      "email": "harkiran.kaur@thapar.edu"
+    },
+    {
+      "name": "Dr. Neenu Garg",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Cloud Computing",
+        "Information Security"
+      ],
+      "email": "neenu.garg@thapar.edu"
+    },
+    {
+      "name": "Dr. Harpreet Singh",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Data Analytics"
+      ],
+      "email": "harpreet.s@thapar.edu"
+    },
+    {
+      "name": "Ms. Sujata Rani",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Natural Language Processing",
+        "Machine Learning"
+      ],
+      "email": "sujata.singla@thapar.edu"
+    },
+    {
+      "name": "Dr. Seemu Sharma",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Cultural Computing",
+        "Human-Centered Computing"
+      ],
+      "email": "seemu.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Sanjeev Rao",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Natural Language Processing",
+        "Machine Learning",
+        "Databases"
+      ],
+      "email": "sanjeev.rao@thapar.edu"
+    },
+    {
+      "name": "Dr. Amrita Kaur",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning",
+        "Medical Image Processing"
+      ],
+      "email": "amrita@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 17,
+  "faculty": [
+    {
+      "name": "Dr. Yadwinder Singh",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Computer Vision",
+        "Image Processing"
+      ],
+      "email": "yadwinder@thapar.edu"
+    },
+    {
+      "name": "Dr. Vaibhav Agarwal",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Software Engineering",
+        "Natural Language Processing"
+      ],
+      "email": "vaibhav.agarwal@thapar.edu"
+    },
+    {
+      "name": "Dr. Jayendra Barua",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Text Mining",
+        "Natural Language Processing"
+      ],
+      "email": "jayendra.barua@thapar.edu"
+    },
+    {
+      "name": "Dr. Saurabh Arora",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Computer Vision",
+        "Image Processing"
+      ],
+      "email": "saurabh.arora@thapar.edu"
+    },
+    {
+      "name": "Dr. Shivani Goswami",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Data Mining",
+        "Machine Learning"
+      ],
+      "email": "shivani.goswami@thapar.edu"
+    },
+    {
+      "name": "Dr. Ravi Kant",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Theoretical Computer Science",
+        "Combinatorial Optimization"
+      ],
+      "email": "ravi.kant1@thapar.edu"
+    },
+    {
+      "name": "Dr. Vijay Kumari",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Artificial Intelligence",
+        "Natural Language Processing",
+        "Computer Vision",
+        "Multi-Modal Analysis",
+        "Multi-lingual Systems"
+      ],
+      "email": "vijay.kumari@thapar.edu"
+    },
+    {
+      "name": "Dr. Kapil Tomar",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "AI and Machine Learning in Public Health",
+        "Algorithms"
+      ],
+      "email": "kapil.tomar@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 18,
+  "faculty": [
+    {
+      "name": "Dr. Vishal Mehra",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Social Media",
+        "Natural Language Processing"
+      ],
+      "email": "vishal.mehra@thapar.edu"
+    },
+    {
+      "name": "Dr. Abdul Kadir",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Mobile Security",
+        "Android Malware",
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "abdul.kadir@thapar.edu"
+    },
+    {
+      "name": "Ms. Stuti Chug",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Brain Computer Interface",
+        "Machine Learning",
+        "Artificial Intelligence"
+      ],
+      "email": "stuti.chug@thapar.edu"
+    },
+    {
+      "name": "Dr. Surabhi Sharma",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Internet of Things",
+        "Cloud Computing",
+        "Computer Networks",
+        "Distributed Systems"
+      ],
+      "email": "surabhi.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Komal Bharti",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Speech Processing",
+        "Pathological Speech Analysis"
+      ],
+      "email": "komal.bharti@thapar.edu"
+    },
+    {
+      "name": "Dr. Jasleen Kaur",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Blockchain Technologies",
+        "Information Security",
+        "Machine Learning"
+      ],
+      "email": "bedijasleen1313@gmail.com"
+    },
+    {
+      "name": "Dr. Sumit Bansal",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Fog Computing",
+        "Cloud Computing",
+        "Fingerprint Recognition",
+        "Biometric Security"
+      ],
+      "email": "sumit.bansal@thapar.edu"
+    },
+    {
+      "name": "Dr. Paluck Arora",
+      "designation": "Assistant Professor (Contractual - II, Research Faculty)",
+      "specialization": [
+        "Image Registration",
+        "Deep Learning"
+      ],
+      "email": "parora_phd20@thapar.edu"
+    }
+  ]
+}
+{
+  "batch": 19,
+  "faculty": [
+    {
+      "name": "Dr. Aashima Sharma",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Blockchain Technologies",
+        "IoMT Networks"
+      ],
+      "email": "aashima.sharma@thapar.edu"
+    },
+    {
+      "name": "Dr. Satbir Singh",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Computer Vision",
+        "Artificial Intelligence (ML, DL, Generative AI)",
+        "Information Fusion"
+      ],
+      "email": "satbir.singh@thapar.edu"
+    },
+    {
+      "name": "Dr. Kashish Goyal",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Computer Vision"
+      ],
+      "email": "kashishgoyal31@gmail.com"
+    },
+    {
+      "name": "Dr. Shabnam Bawa",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning",
+        "Fog Computing"
+      ],
+      "email": "subhsubhbawa@gmail.com"
+    },
+    {
+      "name": "Dr. Tanya Garg",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Data Mining",
+        "Big Data"
+      ],
+      "email": "tanya.garg@thapar.edu"
+    },
+    {
+      "name": "Dr. Arzoo Miglani",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Blockchain",
+        "Smart Grid",
+        "Content Centric Networks"
+      ],
+      "email": "arzoo.miglani@thapar.edu"
+    },
+    {
+      "name": "Dr. Sandeep Verma",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Wireless Sensor Networks",
+        "Internet of Things",
+        "Routing Algorithms",
+        "Artificial Intelligence",
+        "Network Security",
+        "Blockchain-integrated WSN",
+        "Smart City Applications"
+      ],
+      "email": "sandeep.verma@thapar.edu"
+    },
+    {
+      "name": "Dr. Sanju Kumari Singh",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Artificial Intelligence",
+        "Machine Learning",
+        "Big Data"
+      ],
+      "email": "sanju.singh@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 20,
+  "faculty": [
+    {
+      "name": "Dr. Chinu",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Explainable Artificial Intelligence",
+        "Machine Learning",
+        "Cyber Security"
+      ],
+      "email": "chinu@thapar.edu"
+    },
+    {
+      "name": "Ms. Gursimran Kaur",
+      "designation": "Assistant Professor (Contractual - I)",
+      "specialization": [
+        "Natural Language Processing",
+        "Artificial Intelligence",
+        "Machine Learning"
+      ],
+      "email": "gursimran.kaur@thapar.edu"
+    },
+    {
+      "name": "Priya Raina",
+      "designation": "Assistant Professor (Contractual - I)",
+      "specialization": [
+        "Cryptography",
+        "Security",
+        "Forensics"
+      ],
+      "email": "priya.raina@thapar.edu"
+    },
+    {
+      "name": "Tushar Semwal",
+      "designation": "Assistant Professor (Contractual - I)",
+      "specialization": [
+        "Mobile Ad-hoc Networks",
+        "Computer Networks"
+      ],
+      "email": "tushar.semwal@thapar.edu"
+    },
+    {
+      "name": "Namrata Dimari",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Computer Vision",
+        "Deep Learning"
+      ],
+      "email": "namrata.dimari@thapar.edu"
+    },
+    {
+      "name": "Shruti Arora",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Biomedical Signals",
+        "Machine Learning"
+      ],
+      "email": "shruti.arora@thapar.edu"
+    },
+    {
+      "name": "Divjot Singh",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Empirical Software Engineering",
+        "Cognitive Computation"
+      ],
+      "email": "divjot.singh1@thapar.edu"
+    },
+    {
+      "name": "Ashiq Nazir Bhat",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Data Science",
+        "Smart Grid",
+        "Machine Learning",
+        "Deep Learning",
+        "Electric Vehicles (EV)",
+        "Vehicle-to-Grid (V2G)"
+      ],
+      "email": "ashiqnazirbhat@thapar.edu"
+    }
+  ]
+}
+
+
+{
+  "batch": 21,
+  "faculty": [
+    {
+      "name": "Chandni Kumari",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Federated Learning"
+      ],
+      "email": "chandni.kumari@thapar.edu"
+    },
+    {
+      "name": "Shabnam Thakur",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Computer Vision",
+        "Image Processing",
+        "Deep Learning"
+      ],
+      "email": "sthakur_phd21@thapar.edu"
+    },
+    {
+      "name": "Raghuveer Singh Dhaka",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Medical Image Processing",
+        "Wireless Sensor Networks",
+        "Machine Learning"
+      ],
+      "email": "rdhaka_phd21@thapar.edu"
+    },
+    {
+      "name": "Bharti",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning"
+      ],
+      "email": "bharti1@thapar.edu"
+    },
+    {
+      "name": "Diksha Arora",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Deep Learning",
+        "Image Processing"
+      ],
+      "email": "diksha.arora@thapar.edu"
+    },
+    {
+      "name": "Pragya Mishra",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Computer Vision",
+        "Deep Learning"
+      ],
+      "email": "pragya.mishra@thapar.edu"
+    },
+    {
+      "name": "Amardeep Singh",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning",
+        "Computational Biology"
+      ],
+      "email": "amardeep.singh@thapar.edu"
+    },
+    {
+      "name": "Riya Sharma",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Intelligent Battery Management Systems"
+      ],
+      "email": "riya.sharma@thapar.edu"
+    }
+  ]
+}
+
+{
+  "batch": 22,
+  "faculty": [
+    {
+      "name": "Nisha Thakur",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Intelligent Transportation System"
+      ],
+      "email": "nisha.thakur@thapar.edu"
+    },
+    {
+      "name": "Jasmine Kaur",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Serverless Computing"
+      ],
+      "email": "jasmine.kaur1@thapar.edu"
+    },
+    {
+      "name": "Anushka",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Light Fidelity (LiFi)"
+      ],
+      "email": "anushka1@thapar.edu"
+    },
+    {
+      "name": "Priya Kansal",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Artificial Intelligence",
+        "Machine Learning"
+      ],
+      "email": null
+    },
+    {
+      "name": "Ravneet Kaur",
+      "designation": "Assistant Professor (Contractual - II)",
+      "specialization": [
+        "Machine Learning",
+        "Smart City Applications"
+      ],
+      "email": "ravneet.kaur@thapar.edu"
+    },
+    {
+      "name": "Suchita Sharma",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Image Processing"
+      ],
+      "email": "suchita.sharma@thapar.edu"
+    },
+    {
+      "name": "Gurpreet Singh",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Deep Learning"
+      ],
+      "email": "gurpreet.singh3@thapar.edu"
+    },
+    {
+      "name": "Archana Kumari",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning"
+      ],
+      "email": null
+    },
+    {
+      "name": "Navpreet",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "navpreet1@thapar.edu"
+    },
+    {
+      "name": "Kanupriya",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Cloud Computing"
+      ],
+      "email": "kanupriya1@thapar.edu"
+    },
+    {
+      "name": "Kudratdeep Aulakh",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "kudratdeep.aulakh@thapar.edu"
+    },
+    {
+      "name": "Mrinalini Vishal Kakroo",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Deep Learning",
+        "Image Segmentation"
+      ],
+      "email": "mkakroo_phd23@thapar.edu"
+    },
+    {
+      "name": "Ishpreet Kaur",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Machine Learning",
+        "Deep Learning"
+      ],
+      "email": "ikaur_phd23@thapar.edu"
+    },
+    {
+      "name": "Sandeep Kaur",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Link Prediction",
+        "Social Network Analysis"
+      ],
+      "email": "skaur2_phd23@thapar.edu"
+    },
+    {
+      "name": "Seema",
+      "designation": "Assistant Professor (Contractual)",
+      "specialization": [
+        "Wireless Sensor Networks"
+      ],
+      "email": "sseema_phd24@thapar.edu"
+    }
+  ]
+}
