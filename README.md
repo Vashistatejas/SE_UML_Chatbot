@@ -1,75 +1,124 @@
 # TIET Assistant Chatbot
 
-The **TIET Assistant Chatbot** is an interactive, AI-powered companion application built tailored to help students at TIET. It features a beautiful, clean ChatGPT-like user interface to converse with Large Language Models and provides functionality to track and store student details.
+An interactive Streamlit chatbot for Thapar Institute of Engineering and Technology (TIET). The app uses the local TIET prompt dataset for stable university facts, can retrieve Thapar-related live web context for current questions, and can answer from uploaded forms or documents.
 
-## Features
+## What Changed
 
-- **Interactive AI Chat:** Engage in natural conversatons powered by advanced Large Language Models.
-- **Modern User Interface:** A clean, responsive design with custom CSS built on top of Streamlit layout.
-- **Student Profiling:** Allows users to add and manage their details (Name, Roll No., Branch) conveniently through the chat interface.
-- **Secure Configuration:** Employs dotenv for secure API key management along with `.env` files.
+- Adds automatic web retrieval for time-sensitive prompts.
+- Filters web results to Thapar/TIET-related sources and ranks official `thapar.edu` pages first.
+- Blocks irrelevant source domains such as Slack and social pages.
+- Passes retrieved source context into the model and asks it to cite sources with `[1]`, `[2]`, etc.
+- Adds document upload for PDF, DOCX, TXT, MD, CSV, and JSON files. Extracted document context is cited as `[D1]`, `[D2]`, etc.
+- Keeps the local `llm_main_prompt.txt` dataset for stable TIET answers.
+- Supports Groq, Hugging Face Router, OpenAI, or any OpenAI-compatible endpoint through environment variables.
+- Consolidates duplicate app logic into `streamlit_ui.py` so `streamlit_app.py` and `final.py` run the same code.
+- Adds sidebar controls for web search, source count, source display, chat clearing, and student profile details.
 
 ## Project Structure
 
-- `streamlit_app.py`: The main frontend application running on Streamlit that handles UI and LLM interactions.
-- `LLM_main.py`: Core logic for language model processing and interactions.
-- `llm_main_prompt.txt`: System-level prompts configuration for guiding the behavior of the chatbot.
-- `.env`: Environment variables configuration file (Should NOT be committed to version control).
-- `final.py` & `test.py`: Additional backend integration and test scripts.
+- `streamlit_app.py`: Main Streamlit entrypoint.
+- `final.py`: Compatibility entrypoint that launches the same app.
+- `streamlit_ui.py`: Streamlit UI, chat flow, sidebar controls, and streaming response handling.
+- `chatbot_core.py`: Model configuration, prompt construction, Thapar-only web search, source formatting, document extraction, document chunking, and message preparation.
+- `llm_main_prompt.txt`: Local TIET dataset and legacy prompt content.
+- `requirements.txt`: Python dependencies.
+- `.env.example`: Example environment configuration.
 
-## Prerequisites
+## Setup
 
-- [Python](https://www.python.org/) 3.9+ installed on your system.
-- Basic knowledge of working with python virtual environments.
+1. Create and activate a virtual environment:
 
-## Setup & Installation
-
-**1. Clone the repository**
-(Or simply navigate to your project directory):
-```bash
-git clone <your-repository-url>
-cd Software_Eng
-```
-
-**2. Create and activate a Virtual Environment**
 ```bash
 python -m venv .venv
-# On Windows:
 .venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
 ```
 
-**3. Install Dependencies**
-Install the required Python packages (such as `streamlit`, `openai`, `python-dotenv`). If you have a `requirements.txt` file, you can install them directly:
+2. Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
-Otherwise, manually install them:
-```bash
-pip install streamlit openai python-dotenv
-```
 
-**4. Set up Environment Variables**
-Create a `.env` file in the root directory (using the `.env.example` if available) and add your API keys:
+3. Create `.env` from `.env.example` and add an API key.
+
+For Groq GPT-OSS 120B:
+
 ```env
-HUGGINGFACE_API_KEY=your_actual_api_key_here
+GROQ_API_KEY=your_groq_api_key
+CHATBOT_MODEL=openai/gpt-oss-120b
 ```
-*(Make sure `.env` is listed in your `.gitignore` to prevent leaking your API keys.)*
 
-**5. Run the Application**
-Launch the chatbot using Streamlit:
+The app automatically uses Groq's OpenAI-compatible endpoint:
+
+```env
+GROQ_BASE_URL=https://api.groq.com/openai/v1
+```
+
+You only need to set `GROQ_BASE_URL` if you want to override the endpoint explicitly.
+
+For OpenAI instead:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+CHATBOT_MODEL=gpt-5.4-mini
+```
+
+For Hugging Face Router instead:
+
+```env
+HUGGINGFACE_API_KEY=your_huggingface_api_key
+CHATBOT_MODEL=openai/gpt-oss-120b
+```
+
+For another OpenAI-compatible provider:
+
+```env
+OPENAI_API_KEY=your_provider_key
+OPENAI_BASE_URL=https://your-provider.example/v1
+CHATBOT_MODEL=your-model-name
+```
+
+4. Run the app:
+
 ```bash
 streamlit run streamlit_app.py
 ```
 
-The application will start, and you can view it in your browser, typically at `http://localhost:8501`.
+## How Fresh Answers Work
 
-## Usage
+The app checks each prompt for time-sensitive words such as `latest`, `current`, `today`, `admission`, `fee`, `deadline`, `notice`, `event`, `schedule`, and `placement`. It only searches when the prompt is also related to Thapar/TIET. The search query is expanded with Thapar context, official `thapar.edu` sources are ranked highest, and unrelated domains such as Slack/social pages are removed before the model sees the evidence.
 
-- Once the application is running, use the chat input located at the bottom to send queries to the TIET Assistant.
-- To manage student information, click on the "**➕ Add Details**" button positioned in the top right, fill in your details (Name, Roll No., Branch) and save.
+Use the sidebar if you want to:
 
-## Contribution
+- turn web retrieval on or off;
+- force search for every Thapar prompt;
+- change how many sources are retrieved;
+- show or hide retrieved sources.
 
-Feel free to fork the repository and submit pull requests if you have any enhancements, visual updates, or optimizations!
+The local prompt still matters for stable TIET facts. The web context is used when information may have changed.
+
+## Uploaded Forms And Documents
+
+Use the sidebar's **Forms & Docs** uploader to add PDF, DOCX, TXT, MD, CSV, or JSON files. The app extracts text, breaks it into searchable chunks, and includes only the most relevant chunks in the model request.
+
+This is useful for:
+
+- hostel fee circulars;
+- admission brochures;
+- counselling PDFs;
+- event notices;
+- academic forms;
+- placement or department documents.
+
+Scanned image-only PDFs need OCR before upload because regular PDF text extraction cannot read text that exists only as an image.
+
+## Model Recommendation
+
+For your requested Groq setup, use:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+CHATBOT_MODEL=openai/gpt-oss-120b
+```
+
+`openai/gpt-oss-120b` is the better Groq choice for this project than the smaller 20B model because it should follow retrieval/document grounding instructions more reliably. If you later prioritize maximum accuracy over Groq latency/cost, move to a stronger OpenAI model such as `gpt-5.4` or `gpt-5.4-mini`.
