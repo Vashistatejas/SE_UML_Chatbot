@@ -1,0 +1,8 @@
+Problems ->
+input context length around 20,000 tokens. groq api cant be used 
+switch ui to light theme so typical streamlit environment isnt noticeable
+
+solutions->
+reduce system prompt
+RAG 
+Change inference 

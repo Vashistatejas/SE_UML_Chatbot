@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import io
+import json
 import os
 import re
 import urllib.error
@@ -10,9 +11,10 @@ import urllib.request
 import zipfile
 from dataclasses import dataclass
 from datetime import datetime
+from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 from xml.etree import ElementTree
 
 from openai import OpenAI
@@ -182,6 +184,16 @@ class DocumentChunk:
     text: str
 
 
+@dataclass(frozen=True)
+class KnowledgeChunk:
+    chunk_id: str
+    source: str
+    domain: str
+    section: str
+    title: str
+    text: str
+
+
 class DuckDuckGoResultParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
@@ -329,12 +341,446 @@ def create_client(config: ModelConfig | None = None) -> OpenAI:
     return OpenAI(**kwargs)
 
 
+DEFAULT_RAG_SYSTEM_PROMPT = (
+    "You are a TIET student assistant. Answer only using the provided context. "
+    'If information is not present, say "I don\'t have that information." '
+    "If the question is vague, ask a brief clarification question. "
+    "If multiple retrieved chunks conflict, mention the uncertainty. "
+    "Cite the chunk ids you used, such as [K1], [D1], or [W1]."
+)
+
+HOSTEL_QUERY_TERMS = {
+    "hostel",
+    "hostels",
+    "mess",
+    "warden",
+    "wardens",
+    "hall",
+    "rooms",
+    "room",
+    "laundry",
+    "canteen",
+    "fees",
+    "fee",
+}
+
+FACULTY_QUERY_TERMS = {
+    "faculty",
+    "professor",
+    "professors",
+    "teacher",
+    "teachers",
+    "mentor",
+    "mentors",
+    "research",
+    "specialization",
+    "department",
+    "designation",
+    "subject",
+    "subjects",
+}
+
+CLUB_QUERY_TERMS = {
+    "club",
+    "clubs",
+    "society",
+    "societies",
+    "chapter",
+    "faps",
+    "mudra",
+    "saturnalia",
+    "aranya",
+}
+
+STAFF_QUERY_TERMS = {
+    "staff",
+    "office",
+    "dean",
+    "dosa",
+    "adosa",
+    "admin",
+    "contact",
+}
+
+SECTION_HINT_MAP = {
+    "hostel": "hostel",
+    "hall": "hostel",
+    "boys_hostels": "hostel",
+    "girls_hostels": "hostel",
+    "faculty": "faculty",
+    "professor": "faculty",
+    "mentor": "faculty",
+    "staff": "staff",
+    "club": "club",
+    "society": "club",
+    "chapter": "club",
+}
+
+
 def load_system_prompt(path: str = "llm_main_prompt.txt") -> str:
+    return DEFAULT_RAG_SYSTEM_PROMPT
+
+
+def load_local_knowledge_text(path: str = "llm_main_prompt.txt") -> str:
     try:
         with open(path, "r", encoding="utf-8") as prompt_file:
             return prompt_file.read()
     except FileNotFoundError:
-        return "You are a helpful assistant for TIET students."
+        return ""
+
+
+def normalize_label(value: str) -> str:
+    value = normalize_whitespace(value.replace("_", " ").replace("-", " "))
+    return value.title() if value else ""
+
+
+def is_heading_candidate(line: str) -> bool:
+    line = line.strip()
+    if not line:
+        return False
+    if set(line) == {"_"}:
+        return False
+    lowered = line.lower()
+    if lowered.startswith(("user:", "assistant:", "example:")):
+        return False
+    if '"' in line:
+        return False
+    if line.startswith(("{", "}", '"', "[", "]")):
+        return False
+    if len(line) > 110:
+        return False
+    if ":" in line and line.count(":") > 1:
+        return False
+    return any(character.isalpha() for character in line)
+
+
+def extract_json_sections(raw_text: str) -> list[tuple[str, Any]]:
+    sections: list[tuple[str, Any]] = []
+    decoder = json.JSONDecoder()
+    search_start = 0
+    active_heading = ""
+
+    while True:
+        start_index = raw_text.find("{", search_start)
+        if start_index < 0:
+            break
+
+        prefix_lines = raw_text[:start_index].splitlines()
+        for candidate in reversed(prefix_lines[-8:]):
+            if is_heading_candidate(candidate):
+                active_heading = normalize_whitespace(candidate)
+                break
+
+        try:
+            parsed, consumed = decoder.raw_decode(raw_text[start_index:])
+        except json.JSONDecodeError:
+            search_start = start_index + 1
+            continue
+
+        sections.append((active_heading, parsed))
+        search_start = start_index + consumed
+
+    return sections
+
+
+def infer_domain(section_label: str, data: Any) -> str:
+    lowered_label = section_label.lower()
+    for hint, domain in SECTION_HINT_MAP.items():
+        if hint in lowered_label:
+            return domain
+
+    if isinstance(data, dict):
+        keys = {key.lower() for key in data}
+        if {"boys_hostels", "girls_hostels", "common_facilities"} & keys:
+            return "hostel"
+        if "faculty" in keys:
+            return "faculty"
+        if "tiet_staff" in keys:
+            return "staff"
+        if all(
+            isinstance(value, dict) and {"details", "email"} & set(value.keys())
+            for value in data.values()
+        ):
+            return "club"
+
+    return "general"
+
+
+def format_scalar(value: Any) -> str:
+    if value is None:
+        return "Not provided"
+    if isinstance(value, bool):
+        return "Yes" if value else "No"
+    return normalize_whitespace(str(value))
+
+
+def format_field_block(key: str, value: Any, *, indent: int = 0) -> list[str]:
+    prefix = " " * indent
+    label = normalize_label(key)
+
+    if isinstance(value, dict):
+        lines = [f"{prefix}{label}:"]
+        for nested_key, nested_value in value.items():
+            lines.extend(format_field_block(nested_key, nested_value, indent=indent + 2))
+        return lines
+
+    if isinstance(value, list):
+        if not value:
+            return [f"{prefix}{label}: Not provided"]
+        if all(not isinstance(item, (dict, list)) for item in value):
+            joined = ", ".join(format_scalar(item) for item in value)
+            return [f"{prefix}{label}: {joined}"]
+
+        lines = [f"{prefix}{label}:"]
+        for item in value:
+            if isinstance(item, dict):
+                lines.append(f"{prefix}  -")
+                for nested_key, nested_value in item.items():
+                    lines.extend(
+                        format_field_block(nested_key, nested_value, indent=indent + 4)
+                    )
+            else:
+                lines.append(f"{prefix}  - {format_scalar(item)}")
+        return lines
+
+    return [f"{prefix}{label}: {format_scalar(value)}"]
+
+
+def build_chunk_text(
+    *,
+    domain: str,
+    section: str,
+    title: str,
+    record: dict[str, Any],
+    inherited_fields: dict[str, Any] | None = None,
+) -> str:
+    lines = [
+        f"Domain: {normalize_label(domain)}",
+        f"Section: {section or 'TIET Knowledge Base'}",
+        f"Title: {title}",
+    ]
+
+    if inherited_fields:
+        for key, value in inherited_fields.items():
+            lines.extend(format_field_block(key, value))
+
+    for key, value in record.items():
+        lines.extend(format_field_block(key, value))
+
+    return "\n".join(line for line in lines if line.strip())
+
+
+def create_knowledge_chunk(
+    *,
+    counter: int,
+    source: str,
+    domain: str,
+    section: str,
+    title: str,
+    record: dict[str, Any],
+    inherited_fields: dict[str, Any] | None = None,
+) -> KnowledgeChunk:
+    text = build_chunk_text(
+        domain=domain,
+        section=section,
+        title=title,
+        record=record,
+        inherited_fields=inherited_fields,
+    )
+    return KnowledgeChunk(
+        chunk_id=f"K{counter}",
+        source=source,
+        domain=domain,
+        section=section or "TIET Knowledge Base",
+        title=title,
+        text=text,
+    )
+
+
+def default_section_for_domain(domain: str) -> str:
+    return {
+        "faculty": "Faculty Directory",
+        "hostel": "Hostel Directory",
+        "staff": "TIET Staff Directory",
+        "club": "Clubs And Societies",
+    }.get(domain, "TIET Knowledge Base")
+
+
+def chunk_json_section(
+    data: Any,
+    *,
+    section_label: str,
+    source: str,
+    start_counter: int,
+) -> list[KnowledgeChunk]:
+    domain = infer_domain(section_label, data)
+    section_label_lower = section_label.lower()
+    domain_label_is_misaligned = domain not in section_label_lower and not any(
+        hint in section_label_lower
+        for hint, mapped_domain in SECTION_HINT_MAP.items()
+        if mapped_domain == domain
+    )
+    section = (
+        section_label
+        if section_label and not domain_label_is_misaligned
+        else default_section_for_domain(domain)
+    )
+    counter = start_counter
+    chunks: list[KnowledgeChunk] = []
+
+    if isinstance(data, dict) and "faculty" in data and isinstance(data["faculty"], list):
+        inherited = {key: value for key, value in data.items() if key != "faculty"}
+        for faculty in data["faculty"]:
+            if not isinstance(faculty, dict):
+                continue
+            title = faculty.get("name") or f"Faculty {counter}"
+            chunks.append(
+                create_knowledge_chunk(
+                    counter=counter,
+                    source=source,
+                    domain="faculty",
+                    section=section,
+                    title=title,
+                    record=faculty,
+                    inherited_fields=inherited or None,
+                )
+            )
+            counter += 1
+        return chunks
+
+    if isinstance(data, dict) and "tiet_staff" in {key.lower() for key in data}:
+        staff_items = next(
+            (
+                value
+                for key, value in data.items()
+                if key.lower() == "tiet_staff" and isinstance(value, list)
+            ),
+            [],
+        )
+        for staff in staff_items:
+            if not isinstance(staff, dict):
+                continue
+            title = staff.get("name") or staff.get("role") or f"Staff {counter}"
+            chunks.append(
+                create_knowledge_chunk(
+                    counter=counter,
+                    source=source,
+                    domain="staff",
+                    section=section,
+                    title=title,
+                    record=staff,
+                )
+            )
+            counter += 1
+        return chunks
+
+    if isinstance(data, dict) and any(
+        key in data for key in ("boys_hostels", "girls_hostels", "common_facilities")
+    ):
+        common_facilities = data.get("common_facilities")
+        if isinstance(common_facilities, dict):
+            chunks.append(
+                create_knowledge_chunk(
+                    counter=counter,
+                    source=source,
+                    domain="hostel",
+                    section=section,
+                    title="Common Hostel Facilities",
+                    record=common_facilities,
+                )
+            )
+            counter += 1
+
+        for hostel_group in ("boys_hostels", "girls_hostels"):
+            hostels = data.get(hostel_group)
+            if not isinstance(hostels, dict):
+                continue
+            for hostel_name, hostel_data in hostels.items():
+                if not isinstance(hostel_data, dict):
+                    continue
+                chunks.append(
+                    create_knowledge_chunk(
+                        counter=counter,
+                        source=source,
+                        domain="hostel",
+                        section=f"{section} / {normalize_label(hostel_group)}",
+                        title=hostel_name,
+                        record=hostel_data,
+                    )
+                )
+                counter += 1
+        return chunks
+
+    if isinstance(data, dict) and all(
+        isinstance(value, dict) for value in data.values()
+    ):
+        for item_name, item_data in data.items():
+            chunks.append(
+                create_knowledge_chunk(
+                    counter=counter,
+                    source=source,
+                    domain=domain,
+                    section=section,
+                    title=item_name,
+                    record=item_data,
+                )
+            )
+            counter += 1
+        return chunks
+
+    if isinstance(data, list):
+        for item in data:
+            if not isinstance(item, dict):
+                continue
+            title = item.get("name") or item.get("title") or f"Item {counter}"
+            chunks.append(
+                create_knowledge_chunk(
+                    counter=counter,
+                    source=source,
+                    domain=domain,
+                    section=section,
+                    title=title,
+                    record=item,
+                )
+            )
+            counter += 1
+        return chunks
+
+    if isinstance(data, dict):
+        chunks.append(
+            create_knowledge_chunk(
+                counter=counter,
+                source=source,
+                domain=domain,
+                section=section,
+                title=section,
+                record=data,
+            )
+        )
+
+    return chunks
+
+
+@lru_cache(maxsize=1)
+def load_local_knowledge_chunks(path: str = "llm_main_prompt.txt") -> tuple[KnowledgeChunk, ...]:
+    raw_text = load_local_knowledge_text(path)
+    if not raw_text:
+        return ()
+
+    chunks: list[KnowledgeChunk] = []
+    counter = 1
+
+    for section_label, data in extract_json_sections(raw_text):
+        section_chunks = chunk_json_section(
+            data,
+            section_label=section_label,
+            source=path,
+            start_counter=counter,
+        )
+        chunks.extend(section_chunks)
+        counter += len(section_chunks)
+
+    return tuple(chunks)
 
 
 def should_search_web(prompt: str) -> bool:
@@ -675,69 +1121,226 @@ def format_document_context(chunks: Iterable[DocumentChunk]) -> str:
     return "\n\n".join(sections)
 
 
-def build_system_message(
-    base_prompt: str,
+def infer_query_domains(prompt: str) -> set[str]:
+    prompt_tokens = tokenize(prompt)
+    domains = set()
+
+    if prompt_tokens & HOSTEL_QUERY_TERMS:
+        domains.add("hostel")
+    if prompt_tokens & FACULTY_QUERY_TERMS:
+        domains.add("faculty")
+    if prompt_tokens & CLUB_QUERY_TERMS:
+        domains.add("club")
+    if prompt_tokens & STAFF_QUERY_TERMS:
+        domains.add("staff")
+
+    return domains
+
+
+def score_knowledge_chunk(prompt: str, chunk: KnowledgeChunk) -> int:
+    prompt_tokens = tokenize(prompt)
+    if not prompt_tokens:
+        return 0
+
+    title_tokens = tokenize(chunk.title)
+    section_tokens = tokenize(chunk.section)
+    body_tokens = tokenize(chunk.text)
+    prompt_lower = prompt.lower()
+    chunk_blob = " ".join([chunk.title, chunk.section, chunk.text]).lower()
+
+    score = 0
+    score += 6 * len(prompt_tokens & title_tokens)
+    score += 3 * len(prompt_tokens & section_tokens)
+    score += 2 * len(prompt_tokens & body_tokens)
+
+    query_domains = infer_query_domains(prompt)
+    if query_domains and chunk.domain in query_domains:
+        score += 6
+
+    if chunk.title.lower() in prompt_lower or prompt_lower in chunk_blob:
+        score += 8
+
+    return score
+
+
+def estimate_token_count(value: str) -> int:
+    return max(1, len(value) // 4)
+
+
+def deduplicate_knowledge_chunks(
+    chunks: Iterable[KnowledgeChunk],
+) -> list[KnowledgeChunk]:
+    unique_chunks: list[KnowledgeChunk] = []
+    seen = set()
+
+    for chunk in chunks:
+        lines = [
+            line
+            for line in chunk.text.splitlines()
+            if not line.startswith("Section: ")
+        ]
+        fingerprint = normalize_whitespace(
+            f"{chunk.domain} {chunk.title} {' '.join(lines)}"
+        ).lower()
+        if fingerprint in seen:
+            continue
+        seen.add(fingerprint)
+        unique_chunks.append(chunk)
+
+    return unique_chunks
+
+
+def select_relevant_knowledge_chunks(
+    prompt: str,
+    chunks: Iterable[KnowledgeChunk],
     *,
-    web_context: str = "",
+    min_chunks: int = 3,
+    max_chunks: int = 5,
+    max_context_tokens: int = 1000,
+) -> list[KnowledgeChunk]:
+    chunks = list(chunks)
+    if not chunks:
+        return []
+
+    prompt_tokens = tokenize(prompt)
+    if not prompt_tokens:
+        return []
+
+    scored_chunks = sorted(
+        (
+            (score_knowledge_chunk(prompt, chunk), chunk)
+            for chunk in deduplicate_knowledge_chunks(chunks)
+        ),
+        key=lambda item: item[0],
+        reverse=True,
+    )
+
+    positive_matches = [chunk for score, chunk in scored_chunks if score > 0]
+    if not positive_matches:
+        return []
+
+    selected: list[KnowledgeChunk] = []
+    total_tokens = 0
+
+    for chunk in positive_matches:
+        chunk_tokens = estimate_token_count(chunk.text)
+        if selected and total_tokens + chunk_tokens > max_context_tokens:
+            continue
+        selected.append(chunk)
+        total_tokens += chunk_tokens
+        if len(selected) >= max_chunks:
+            break
+
+    if len(selected) >= min_chunks:
+        return selected
+
+    preferred_domains = infer_query_domains(prompt)
+    for _, chunk in scored_chunks:
+        if chunk in selected:
+            continue
+        if preferred_domains and chunk.domain not in preferred_domains:
+            continue
+        chunk_tokens = estimate_token_count(chunk.text)
+        if selected and total_tokens + chunk_tokens > max_context_tokens:
+            continue
+        selected.append(chunk)
+        total_tokens += chunk_tokens
+        if len(selected) >= min(max_chunks, min_chunks):
+            break
+
+    return selected
+
+
+def format_knowledge_context(chunks: Iterable[KnowledgeChunk]) -> str:
+    chunks = list(chunks)
+    if not chunks:
+        return ""
+
+    sections = []
+    for chunk in chunks:
+        sections.append(
+            "\n".join(
+                [
+                    f"[{chunk.chunk_id}] {chunk.title}",
+                    f"Source: {chunk.source}",
+                    f"Domain: {chunk.domain}",
+                    f"Section: {chunk.section}",
+                    chunk.text,
+                ]
+            )
+        )
+
+    return "\n\n".join(sections)
+
+
+def build_system_message() -> str:
+    today = datetime.now().strftime("%B %d, %Y")
+    return f"{DEFAULT_RAG_SYSTEM_PROMPT} Current date: {today}."
+
+
+def build_rag_user_message(
+    *,
+    user_prompt: str,
+    knowledge_context: str = "",
     document_context: str = "",
+    web_context: str = "",
     student_context: str = "",
 ) -> str:
-    today = datetime.now().strftime("%B %d, %Y")
-    freshness_policy = f"""
-You are TIET Assistant. Current date: {today}.
+    context_blocks = []
 
-Answer with this evidence priority:
-1. Use DOCUMENT_CONTEXT first when the user asks about uploaded forms, PDFs, files, or documents.
-2. Use WEB_CONTEXT for current, recent, deadline, fee, admission, ranking, schedule, notice, placement, or event questions.
-3. Use LOCAL_TIET_DATASET for stable TIET facts such as clubs, hostels, staff, faculty, contacts, and mentor specializations.
-4. Use general knowledge only for non-TIET questions or broad explanations.
-
-Accuracy rules:
-- Do not invent facts, dates, fees, cutoffs, phone numbers, emails, names, or policies.
-- If the available evidence is incomplete, say what is missing and recommend checking the official source.
-- When WEB_CONTEXT is used, cite source numbers like [1] or [2].
-- When DOCUMENT_CONTEXT is used, cite document source numbers like [D1] or [D2].
-- Keep answers concise and student-friendly.
-""".strip()
-
-    parts = [
-        freshness_policy,
-        "LOCAL_TIET_DATASET AND LEGACY PROMPT:\n" + base_prompt.strip(),
-    ]
-
-    if student_context:
-        parts.append(student_context)
-
+    if knowledge_context:
+        context_blocks.append("LOCAL_KNOWLEDGE_CHUNKS:\n" + knowledge_context)
     if document_context:
-        parts.append("DOCUMENT_CONTEXT:\n" + document_context)
-
+        context_blocks.append("DOCUMENT_CONTEXT:\n" + document_context)
     if web_context:
-        parts.append("WEB_CONTEXT:\n" + web_context)
+        context_blocks.append("WEB_CONTEXT:\n" + web_context)
+    if student_context:
+        context_blocks.append(student_context)
 
-    return "\n\n".join(parts)
+    context_text = "\n\n".join(context_blocks) if context_blocks else "No relevant context retrieved."
+
+    return "\n".join(
+        [
+            "CONTEXT:",
+            context_text,
+            "",
+            "QUESTION:",
+            user_prompt,
+            "",
+            "INSTRUCTIONS:",
+            "Answer clearly and concisely.",
+            "Prefer structured responses when helpful.",
+            "Do not hallucinate or use outside knowledge.",
+            'If the answer is missing from the context, say "I don\'t have that information."',
+            "If multiple chunks conflict, mention the uncertainty.",
+            "Show the retrieved chunk ids and source labels used for the answer.",
+        ]
+    )
 
 
 def build_api_messages(
     *,
-    base_prompt: str,
     history: list[dict[str, str]],
     user_prompt: str,
+    knowledge_context: str = "",
     student_details: dict[str, str] | None = None,
     web_context: str = "",
     document_context: str = "",
     max_history_messages: int = 8,
 ) -> list[dict[str, str]]:
-    system_message = build_system_message(
-        base_prompt,
-        web_context=web_context,
-        document_context=document_context,
-        student_context=build_student_context(student_details),
-    )
+    system_message = build_system_message()
     recent_history = [
         {"role": message["role"], "content": message["content"]}
         for message in history[-max_history_messages:]
         if message.get("role") in {"user", "assistant"} and message.get("content")
     ]
+    rag_user_message = build_rag_user_message(
+        user_prompt=user_prompt,
+        knowledge_context=knowledge_context,
+        document_context=document_context,
+        web_context=web_context,
+        student_context=build_student_context(student_details),
+    )
     return [{"role": "system", "content": system_message}] + recent_history + [
-        {"role": "user", "content": user_prompt}
+        {"role": "user", "content": rag_user_message}
     ]

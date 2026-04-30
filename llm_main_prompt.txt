@@ -107,7 +107,7 @@ Information about societies/clubs of thapar institute(in the json format. club n
   "FAPS": {
     "details": "Fine Arts and Photography Society; focuses on painting, sketching, photography and exhibitions.",
     "email": "faps@thapar.edu",
-    "contact": "President: Dr. Ravi Kiran (9876114591)"
+    "contact": "President: Dr. Ashima Singh (9878017868)"
   },
   "YWC": {
     "details": "Youth Welfare Club; organizes welfare events, talent hunts, yoga camps, festival celebrations and blood donation drives.",

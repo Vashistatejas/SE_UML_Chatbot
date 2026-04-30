@@ -1,24 +1,15 @@
+from __future__ import annotations
+
+import hashlib
 import html
 
 import streamlit as st
 from dotenv import load_dotenv
 
-from chatbot_core import (
-    ModelConfig,
-    build_api_messages,
-    build_search_query,
-    chunk_document_text,
-    create_client,
-    format_web_context,
-    extract_text_from_document,
-    format_document_context,
-    get_model_config,
-    is_tiet_related_prompt,
-    load_system_prompt,
-    search_web,
-    select_relevant_document_chunks,
-    should_search_web,
-)
+from llm_service import ModelConfig, create_client, get_model_config
+from rag_data import RagChunk, chunk_uploaded_document, extract_text_from_document, load_dataset_chunks
+from rag_index import FaissChunkStore, RetrievalHit, build_transient_faiss_store, detect_domains, get_embedder
+from rag_prompt import build_clarification_prompt, build_messages, format_retrieved_chunks, is_vague_query
 
 
 def render_styles() -> None:
@@ -26,41 +17,48 @@ def render_styles() -> None:
         """
 <style>
     .stApp {
-        background: #101114;
-        color: #f5f5f0;
+        background: #ffffff;
+        color: #111827;
     }
 
     h1 {
-        text-align: center;
-        font-family: Inter, system-ui, sans-serif;
+        color: #0f172a;
+        font-family: "Segoe UI", sans-serif;
+        font-size: 2rem;
         font-weight: 700;
-        color: #f5f5f0;
-        margin-bottom: 1.5rem;
-    }
-
-    .stChatMessage {
-        background-color: #202126;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #34363d;
-    }
-
-    .stChatInputContainer {
-        padding-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     [data-testid="stSidebar"] {
-        background: #17181c;
-        border-right: 1px solid #2d3036;
+        background: #f8fafc;
+        border-right: 1px solid #e2e8f0;
     }
 
-    .source-card {
-        border: 1px solid #34363d;
-        border-radius: 8px;
-        padding: 0.75rem;
-        margin: 0.5rem 0;
-        background: #181a1f;
+    .stChatMessage {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        background: #ffffff;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .chunk-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 0.9rem;
+        margin-bottom: 0.75rem;
+        background: #f8fafc;
+    }
+
+    .chunk-meta {
+        color: #475569;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .hero-copy {
+        color: #475569;
+        max-width: 48rem;
+        margin-bottom: 1rem;
     }
 </style>
 """,
@@ -73,147 +71,174 @@ def get_cached_client(base_url: str | None, api_key: str | None, model: str):
     return create_client(ModelConfig(base_url=base_url, api_key=api_key, api_key_name=None, model=model))
 
 
-@st.cache_data(show_spinner=False)
-def get_cached_system_prompt() -> str:
-    return load_system_prompt()
+@st.cache_resource(show_spinner=False)
+def get_cached_embedder():
+    return get_embedder()
+
+
+@st.cache_resource(show_spinner=False)
+def get_cached_dataset_chunks() -> list[RagChunk]:
+    return load_dataset_chunks()
+
+
+@st.cache_resource(show_spinner=False)
+def get_cached_main_store() -> FaissChunkStore:
+    chunks = get_cached_dataset_chunks()
+    embedder = get_cached_embedder()
+    return FaissChunkStore.load_or_create(chunks=chunks, embedder=embedder)
 
 
 def initialize_state() -> None:
     defaults = {
         "messages": [],
-        "student_details": None,
-        "show_input_form": False,
-        "last_sources": [],
-        "document_chunks": [],
-        "document_ids": [],
-        "document_names": [],
+        "last_retrieved_chunks": [],
+        "uploaded_doc_ids": [],
+        "uploaded_doc_chunks": [],
+        "uploaded_doc_store": None,
+        "uploaded_doc_signature": "",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
 
-def save_student_details() -> None:
-    st.session_state.student_details = {
-        "name": st.session_state.input_name,
-        "roll_no": st.session_state.input_roll_no,
-        "branch": st.session_state.input_branch,
-    }
-    st.session_state.show_input_form = False
+def compute_upload_signature(files) -> str:
+    digest = hashlib.sha256()
+    for file in files:
+        digest.update(file.name.encode("utf-8"))
+        digest.update(str(file.size).encode("utf-8"))
+    return digest.hexdigest()
 
 
-def render_sidebar(config) -> tuple[bool, bool, int, bool]:
-    st.sidebar.header("Assistant Settings")
-    st.sidebar.caption(f"Model: `{config.model}`")
-    if config.base_url:
-        st.sidebar.caption(f"Endpoint: `{config.base_url}`")
+def sync_uploaded_documents(uploaded_files) -> None:
+    signature = compute_upload_signature(uploaded_files)
+    if signature == st.session_state.uploaded_doc_signature:
+        return
 
-    web_search_enabled = st.sidebar.toggle(
-        "Search web for current questions",
-        value=True,
-        help="Automatically retrieves current web context for prompts that look time-sensitive.",
-    )
-    force_web_search = st.sidebar.toggle(
-        "Search every Thapar prompt",
-        value=False,
-        help="Use this when you want citations for all Thapar answers, even stable questions.",
-    )
-    max_sources = st.sidebar.slider("Sources", min_value=2, max_value=6, value=4)
-    show_sources = st.sidebar.toggle("Show retrieved sources", value=True)
+    st.session_state.uploaded_doc_signature = signature
+    st.session_state.uploaded_doc_ids = []
+    st.session_state.uploaded_doc_chunks = []
+    st.session_state.uploaded_doc_store = None
 
-    if st.sidebar.button("Clear chat", use_container_width=True):
-        st.session_state.messages = []
-        st.session_state.last_sources = []
-        st.rerun()
+    if not uploaded_files:
+        return
 
-    render_document_controls()
-
-    st.sidebar.divider()
-    st.sidebar.subheader("Student Profile")
-    if st.session_state.student_details:
-        details = st.session_state.student_details
-        st.sidebar.text(f"Name: {details.get('name', '')}")
-        st.sidebar.text(f"Roll No: {details.get('roll_no', '')}")
-        st.sidebar.text(f"Branch: {details.get('branch', '')}")
-        if st.sidebar.button("Edit profile", use_container_width=True):
-            st.session_state.show_input_form = True
-    else:
-        if st.sidebar.button("Add profile", use_container_width=True):
-            st.session_state.show_input_form = True
-
-    if st.session_state.show_input_form:
-        with st.sidebar.form("details_form"):
-            current = st.session_state.student_details or {}
-            st.text_input("Name", value=current.get("name", ""), key="input_name")
-            st.text_input("Roll No", value=current.get("roll_no", ""), key="input_roll_no")
-            st.text_input("Branch", value=current.get("branch", ""), key="input_branch")
-            st.form_submit_button("Save", on_click=save_student_details)
-
-    return web_search_enabled, force_web_search, max_sources, show_sources
-
-
-def render_document_controls() -> None:
-    st.sidebar.divider()
-    st.sidebar.subheader("Forms & Docs")
-    uploaded_files = st.sidebar.file_uploader(
-        "Add source files",
-        type=["pdf", "docx", "txt", "md", "csv", "json"],
-        accept_multiple_files=True,
-        help="Uploaded documents are searched locally and cited as [D1], [D2], etc.",
-    )
-
+    next_index = 1
     for uploaded_file in uploaded_files:
         file_id = f"{uploaded_file.name}:{uploaded_file.size}"
-        if file_id in st.session_state.document_ids:
-            continue
-
         try:
             text = extract_text_from_document(uploaded_file.name, uploaded_file.getvalue())
-            chunks = chunk_document_text(uploaded_file.name, text)
+            chunks = chunk_uploaded_document(
+                filename=uploaded_file.name,
+                text=text,
+                start_index=next_index,
+            )
         except Exception as error:
-            st.sidebar.warning(f"Could not read {uploaded_file.name}: {error}")
+            st.sidebar.warning(f"Could not index {uploaded_file.name}: {error}")
             continue
 
         if not chunks:
-            st.sidebar.warning(f"No extractable text found in {uploaded_file.name}.")
             continue
 
-        st.session_state.document_ids.append(file_id)
-        st.session_state.document_names.append(uploaded_file.name)
-        st.session_state.document_chunks.extend(chunks)
+        st.session_state.uploaded_doc_ids.append(file_id)
+        st.session_state.uploaded_doc_chunks.extend(chunks)
+        next_index += len(chunks)
 
-    if st.session_state.document_names:
-        st.sidebar.caption(
-            f"{len(st.session_state.document_names)} document(s), "
-            f"{len(st.session_state.document_chunks)} searchable chunk(s)."
+    if st.session_state.uploaded_doc_chunks:
+        embedder = get_cached_embedder()
+        st.session_state.uploaded_doc_store = build_transient_faiss_store(
+            chunks=st.session_state.uploaded_doc_chunks,
+            embedder=embedder,
         )
-        for name in st.session_state.document_names[-5:]:
-            st.sidebar.text(f"- {name}")
 
-        if st.sidebar.button("Clear documents", use_container_width=True):
-            st.session_state.document_chunks = []
-            st.session_state.document_ids = []
-            st.session_state.document_names = []
+
+def render_sidebar(config: ModelConfig) -> tuple[int, bool]:
+    dataset_chunks = get_cached_dataset_chunks()
+    embedder = get_cached_embedder()
+
+    st.sidebar.header("RAG Settings")
+    st.sidebar.caption(f"Chat model: `{config.model}`")
+    st.sidebar.caption(f"Embedding: `{embedder.config.model}`")
+    st.sidebar.caption(f"Dataset chunks: `{len(dataset_chunks)}`")
+
+    top_k = st.sidebar.slider("Top-k retrieval", min_value=3, max_value=8, value=5)
+    show_debug = st.sidebar.toggle("Show retrieved chunks", value=True)
+
+    st.sidebar.divider()
+    st.sidebar.subheader("Optional Documents")
+    uploaded_files = st.sidebar.file_uploader(
+        "Upload extra PDFs or notes",
+        type=["pdf", "docx", "txt", "md", "csv", "json"],
+        accept_multiple_files=True,
+    )
+    sync_uploaded_documents(uploaded_files)
+
+    if st.session_state.uploaded_doc_chunks:
+        st.sidebar.caption(
+            f"Uploaded document chunks: `{len(st.session_state.uploaded_doc_chunks)}`"
+        )
+        if st.sidebar.button("Clear uploaded documents", use_container_width=True):
+            st.session_state.uploaded_doc_signature = ""
+            st.session_state.uploaded_doc_ids = []
+            st.session_state.uploaded_doc_chunks = []
+            st.session_state.uploaded_doc_store = None
             st.rerun()
     else:
-        st.sidebar.caption("No documents added yet.")
+        st.sidebar.caption("No additional documents indexed.")
+
+    if st.sidebar.button("Clear chat", use_container_width=True):
+        st.session_state.messages = []
+        st.session_state.last_retrieved_chunks = []
+        st.rerun()
+
+    return top_k, show_debug
 
 
-def render_sources(sources) -> None:
-    if not sources:
-        st.info("No web sources were retrieved for the last answer.")
+def merge_hits(*hit_groups: list[RetrievalHit], top_k: int, max_context_tokens: int = 1000) -> list[RetrievalHit]:
+    combined = [hit for group in hit_groups for hit in group]
+    combined.sort(key=lambda hit: hit.score, reverse=True)
+
+    selected: list[RetrievalHit] = []
+    seen = set()
+    total_tokens = 0
+
+    for hit in combined:
+        fingerprint = (
+            hit.chunk.domain,
+            hit.chunk.title.strip().lower(),
+            hit.chunk.text.strip().lower(),
+        )
+        if fingerprint in seen:
+            continue
+
+        chunk_tokens = max(1, len(hit.chunk.text) // 4)
+        if selected and total_tokens + chunk_tokens > max_context_tokens:
+            continue
+
+        selected.append(hit)
+        seen.add(fingerprint)
+        total_tokens += chunk_tokens
+        if len(selected) >= top_k:
+            break
+
+    return selected
+
+
+def render_retrieved_chunks(chunk_cards: list[dict[str, str]]) -> None:
+    if not chunk_cards:
+        st.info("No chunks were retrieved for the last answer.")
         return
 
-    for index, source in enumerate(sources, start=1):
-        title = html.escape(source.title)
-        url = html.escape(source.url)
-        snippet = html.escape(source.snippet or source.text[:280])
+    for card in chunk_cards:
         st.markdown(
             f"""
-<div class="source-card">
-    <strong>[{index}] {title}</strong><br>
-    <a href="{url}" target="_blank">{url}</a><br>
-    <span>{snippet}</span>
+<div class="chunk-card">
+    <strong>[{html.escape(card["chunk_id"])}] {html.escape(card["title"])}</strong>
+    <div class="chunk-meta">
+        {html.escape(card["domain"])} | {html.escape(card["section"])} | score {html.escape(card["score"])}
+    </div>
+    <div class="chunk-meta">{html.escape(card["source"])}</div>
+    <pre style="white-space:pre-wrap;margin:0;">{html.escape(card["text"][:1000])}</pre>
 </div>
 """,
             unsafe_allow_html=True,
@@ -221,58 +246,76 @@ def render_sources(sources) -> None:
 
 
 def stream_completion(client, *, model: str, messages: list[dict[str, str]], placeholder) -> str:
-    completion = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        stream=True,
-    )
+    completion = client.chat.completions.create(model=model, messages=messages, stream=True)
 
     full_response = ""
     for chunk in completion:
         if chunk.choices and chunk.choices[0].delta.content is not None:
             full_response += chunk.choices[0].delta.content
-            placeholder.markdown(full_response + "...")
+            placeholder.markdown(full_response + "▌")
 
     placeholder.markdown(full_response)
     return full_response
 
 
+def retrieve_semantic_context(query: str, *, top_k: int) -> list[RetrievalHit]:
+    main_store = get_cached_main_store()
+    preferred_domains = detect_domains(query)
+    dataset_hits = main_store.search(
+        query,
+        top_k=top_k,
+        max_context_tokens=1000,
+        preferred_domains=preferred_domains,
+    )
+
+    if st.session_state.uploaded_doc_store is None:
+        return dataset_hits
+
+    document_hits = st.session_state.uploaded_doc_store.search(
+        query,
+        top_k=min(2, top_k),
+        max_context_tokens=350,
+        preferred_domains={"document"} if "document" in preferred_domains else set(),
+    )
+    return merge_hits(dataset_hits, document_hits, top_k=top_k)
+
+
 def run_app() -> None:
     load_dotenv()
-    st.set_page_config(page_title="TIET Assistant Chatbot", page_icon="T", layout="centered")
+    st.set_page_config(page_title="TIET RAG Assistant", page_icon="T", layout="centered")
     render_styles()
     initialize_state()
 
-    config = get_model_config()
     try:
+        config = get_model_config()
         client = get_cached_client(config.base_url, config.api_key, config.model)
+        get_cached_main_store()
     except RuntimeError as error:
         st.error(str(error))
-        st.info("Create a `.env` file with `OPENAI_API_KEY` or `HUGGINGFACE_API_KEY`.")
+        st.info(
+            "Set a chat API key and install `faiss-cpu`, `numpy`, and either "
+            "`sentence-transformers` or `OPENAI_API_KEY` for embeddings."
+        )
         st.stop()
 
-    web_search_enabled, force_web_search, max_sources, show_sources = render_sidebar(config)
-    system_prompt = get_cached_system_prompt()
+    top_k, show_debug = render_sidebar(config)
 
-    st.title("TIET Assistant Chatbot")
-
-    if not st.session_state.messages:
-        st.markdown(
-            "<div style='display:flex;justify-content:center;align-items:center;"
-            "height:45vh;flex-direction:column;color:#9a9a90;'>"
-            "<h3>How can I help you?</h3></div>",
-            unsafe_allow_html=True,
-        )
+    st.title("TIET Student Assistant")
+    st.markdown(
+        "<p class='hero-copy'>Semantic RAG over TIET hostel, faculty, club, and staff data. "
+        "Only retrieved chunks are sent to the model.</p>",
+        unsafe_allow_html=True,
+    )
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if show_sources and st.session_state.last_sources:
-        with st.expander("Sources from last answer", expanded=False):
-            render_sources(st.session_state.last_sources)
+    if show_debug and st.session_state.last_retrieved_chunks:
+        with st.expander("Retrieved chunks from last answer", expanded=False):
+            render_retrieved_chunks(st.session_state.last_retrieved_chunks)
 
-    prompt = st.chat_input("Type your message here...")
+    prompt = st.chat_input("Ask about hostels, faculty, research areas, or contacts")
     if not prompt:
         return
 
@@ -280,56 +323,51 @@ def run_app() -> None:
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    web_context = ""
-    document_context = ""
-    sources = []
-    relevant_document_chunks = select_relevant_document_chunks(
-        prompt,
-        st.session_state.document_chunks,
-    )
-    document_context = format_document_context(relevant_document_chunks)
-    search_needed = (
-        web_search_enabled
-        and is_tiet_related_prompt(prompt)
-        and (force_web_search or should_search_web(prompt))
-    )
+    if is_vague_query(prompt):
+        clarification = build_clarification_prompt(prompt)
+        st.session_state.last_retrieved_chunks = []
+        with st.chat_message("assistant"):
+            st.markdown(clarification)
+        st.session_state.messages.append({"role": "assistant", "content": clarification})
+        return
 
-    if search_needed:
-        query = build_search_query(prompt)
-        with st.status("Retrieving Thapar-only current context...", expanded=False):
-            sources = search_web(query, max_results=max_sources)
-            web_context = format_web_context(sources, query)
-            if sources:
-                st.write(f"Found {len(sources)} source(s).")
-            else:
-                st.write("No Thapar-related sources found. The assistant will answer with available local context.")
+    with st.spinner("Retrieving relevant TIET chunks..."):
+        hits = retrieve_semantic_context(prompt, top_k=top_k)
+        retrieved_cards = format_retrieved_chunks(hits)
+        st.session_state.last_retrieved_chunks = retrieved_cards
 
-    st.session_state.last_sources = sources
-    api_messages = build_api_messages(
-        base_prompt=system_prompt,
+    if not hits:
+        fallback = "I don't have that information."
+        with st.chat_message("assistant"):
+            st.markdown(fallback)
+        st.session_state.messages.append({"role": "assistant", "content": fallback})
+        return
+
+    messages = build_messages(
+        user_query=prompt,
+        hits=hits,
         history=st.session_state.messages[:-1],
-        user_prompt=prompt,
-        student_details=st.session_state.student_details,
-        web_context=web_context,
-        document_context=document_context,
     )
 
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
-        try:
-            full_response = stream_completion(
-                client,
-                model=config.model,
-                messages=api_messages,
-                placeholder=message_placeholder,
-            )
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
-        except Exception as error:
-            st.error(f"An error occurred while generating the answer: {error}")
+        with st.spinner("Generating answer..."):
+            try:
+                answer = stream_completion(
+                    client,
+                    model=config.model,
+                    messages=messages,
+                    placeholder=message_placeholder,
+                )
+            except Exception as error:
+                st.error(f"Failed to generate answer: {error}")
+                return
 
-    if show_sources and sources:
-        with st.expander("Sources used", expanded=True):
-            render_sources(sources)
+    st.session_state.messages.append({"role": "assistant", "content": answer})
+
+    if show_debug:
+        with st.expander("Retrieved chunks used", expanded=True):
+            render_retrieved_chunks(retrieved_cards)
 
 
 if __name__ == "__main__":
